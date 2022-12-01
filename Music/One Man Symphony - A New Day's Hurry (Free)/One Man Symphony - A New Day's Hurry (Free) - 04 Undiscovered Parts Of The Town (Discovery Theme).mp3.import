@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/One Man Symphony - A New Day's Hurry (Free) - 04 Undiscovered Parts Of The Town (Discovery Theme).mp3-6beb862d3e9f6f61c683c31f1df63a71.mp3str"
+
+[deps]
+
+source_file="res://Music/One Man Symphony - A New Day's Hurry (Free)/One Man Symphony - A New Day's Hurry (Free) - 04 Undiscovered Parts Of The Town (Discovery Theme).mp3"
+dest_files=[ "res://.import/One Man Symphony - A New Day's Hurry (Free) - 04 Undiscovered Parts Of The Town (Discovery Theme).mp3-6beb862d3e9f6f61c683c31f1df63a71.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

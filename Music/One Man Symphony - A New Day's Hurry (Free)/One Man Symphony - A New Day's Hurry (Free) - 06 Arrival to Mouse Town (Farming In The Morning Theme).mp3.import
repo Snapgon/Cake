@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/One Man Symphony - A New Day's Hurry (Free) - 06 Arrival to Mouse Town (Farming In The Morning Theme).mp3-6d0cfa26db62478588e62799025560aa.mp3str"
+
+[deps]
+
+source_file="res://Music/One Man Symphony - A New Day's Hurry (Free)/One Man Symphony - A New Day's Hurry (Free) - 06 Arrival to Mouse Town (Farming In The Morning Theme).mp3"
+dest_files=[ "res://.import/One Man Symphony - A New Day's Hurry (Free) - 06 Arrival to Mouse Town (Farming In The Morning Theme).mp3-6d0cfa26db62478588e62799025560aa.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

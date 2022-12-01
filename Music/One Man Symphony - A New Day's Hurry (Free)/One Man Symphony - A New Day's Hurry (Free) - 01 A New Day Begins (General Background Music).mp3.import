@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/One Man Symphony - A New Day's Hurry (Free) - 01 A New Day Begins (General Background Music).mp3-1604a9e6c880f57e2d972e0787b453de.mp3str"
+
+[deps]
+
+source_file="res://Music/One Man Symphony - A New Day's Hurry (Free)/One Man Symphony - A New Day's Hurry (Free) - 01 A New Day Begins (General Background Music).mp3"
+dest_files=[ "res://.import/One Man Symphony - A New Day's Hurry (Free) - 01 A New Day Begins (General Background Music).mp3-1604a9e6c880f57e2d972e0787b453de.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

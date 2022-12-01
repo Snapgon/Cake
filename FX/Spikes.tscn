@@ -1,0 +1,46 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Particles.gd" type="Script" id=1]
+
+[sub_resource type="Curve" id=1]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 0.992032, 0 ), -4.96122, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=2]
+curve = SubResource( 1 )
+
+[sub_resource type="ParticlesMaterial" id=3]
+emission_shape = 1
+emission_sphere_radius = 1.0
+spread = 180.0
+gravity = Vector3( 0, 0, 0 )
+initial_velocity = 0.5
+angle = 360.0
+angle_random = 1.0
+scale_random = 0.3
+scale_curve = SubResource( 2 )
+
+[sub_resource type="SpatialMaterial" id=4]
+params_diffuse_mode = 4
+params_specular_mode = 4
+params_billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+albedo_color = Color( 0, 0, 0, 1 )
+
+[sub_resource type="QuadMesh" id=5]
+material = SubResource( 4 )
+size = Vector2( 0.1, 7 )
+
+[node name="Particles" type="Particles"]
+emitting = false
+lifetime = 0.4
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource( 3 )
+draw_pass_1 = SubResource( 5 )
+script = ExtResource( 1 )
+time = 0.4
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.4

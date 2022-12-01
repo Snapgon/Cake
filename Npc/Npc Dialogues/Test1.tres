@@ -1,0 +1,1446 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://addons/dialogue_manager/dialogue_resource.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+resource_version = 45
+syntax_version = 2
+raw_text = "~ Sell
+Sailsman: [wave amp=25 freq=5] [[Nice weather we're having|Good day|Howdy]]! [/wave]
+Sailsman: Would you like to [shake rate=20 level=10] BUY [/shake] a leaf?
+- sure 
+	if money >=120
+		do charge()
+		Sailsman: Here you go! 
+		Sailsman: Come back so I can make more [wave amp=25 freq=5]shinies[/wave].
+	else
+		Sailsman: It doesn't look like you have enough [wave amp=25 freq=5]shinies[/wave].
+		Sailsman: Come back when you have more [wave amp=25 freq=5]golden orbs[/wave].
+		
+- nope 
+
+~ Setup
+if has_talked_to_tutorial == false
+	Strange Old Man: Say, are you the harbinger?
+	- absolutely
+	- yep
+	Strange Old Man: I knew it!
+	Strange Old Man: We have awaited your arrival for [shake rate=20 level=10]many decades[/shake].
+	Strange Old Man: They imprisoned it behind a [speed=0.2][wave amp=25 freq=5]OBSTACLE COURSE[/wave]!
+	Strange Old Man: Luckily, the fools left a convenient amount-
+	Strange Old Man: of leaves lying around.
+	Strange Old Man: The kobolds have gathered most of them so buying-
+	Strange Old Man: them will be [wave amp=25 freq=5]necessary[/wave].
+	Strange Old Man: The leaves will upgrade your float.
+	Strange Old Man: Now for your cakes.
+	Strange Old Man: We have one left, but you will have to aquire the other two.
+	do add_cake()
+	Strange Old Man: Do you remember how to use them?
+	- absolutely
+	- partly
+		Strange Old Man: Focus intently on the letter [wave amp=25 freq=5]K[/wave] to throw it.
+		Strange Old Man: Focus on the letter [wave amp=25 freq=5]L[/wave] to swap cakes.
+	Strange Old Man: Just talk to me again if you forget something.
+	Strange Old Man: Now, it awaits it's freedom in the bay.
+	set has_talked_to_tutorial =  true
+else
+	Strange Old Man: Have you [[forgotten|lapsed|buried|abandoned]] something I told you?
+	- no
+		Strange Old Man: strange[next=auto]
+	- yes
+		Strange Old Man: Have you [[forgotten|lapsed|buried|abandoned]] what to do?
+		- yes
+			Strange Old Man: Collect money for leaves.
+			Strange Old Man: Obtain the other two cakes.
+			Strange Old Man: Free [shake rate=20 level=10]IT[/shake]!
+		- no
+			Strange Old Man: Have you [[forgotten|lapsed|buried|abandoned]] how to use the cakes?
+			- yes
+				Strange Old Man: Focus intently on the letter [wave amp=25 freq=5]K[/wave] to throw it.
+				Strange Old Man: Focus on the letter [wave amp=25 freq=5]L[/wave] to swap cakes.
+			- no 
+	Strange Old Man: Now, it awaits it's freedom in the bay.
+
+
+~ CannonQuest
+if cannon_task_done == false
+	Captain: Aye Matey, I need thine help.
+	Captain: My cannon here needs to be aligned.
+	Captain: I need you to find three switches around tis island.
+	Captain: Then, I need you to thwack them all in 45 seconds.
+	Captain: In return, I'll give you this here [wave amp=25 freq=5]cake[/wave].
+	- Do I have a choice?
+		Captain: ...
+	- sure 
+	Captain: Come back to me when you've done it!
+else
+	Captain: Thanks for the help!
+	if cannon_reward == false
+		Captain: Here be thine reward!
+		do spawn_boom_cake()
+		set cannon_reward = true
+		Captain: It'll blow any random rocks to smithereens!
+		Captain: Might also be of some use on [shake rate=20 level=10]IT[/shake]'s seals.
+		
+~ Doom
+Other Strange Old Man: This is it!
+Other Strange Old Man: When you enter the gauntlet,
+Other Strange Old Man: you'll only have 75 seconds to reach [shake rate=20 level=10]IT[/shake]!
+Other Strange Old Man: Free [wave amp=25 freq=5]IT[/wave]!
+
+~ Hook
+if hook_task_done == false
+	Puzzle Master: Greetings.
+	Puzzle Master: Why are you here?
+	- I want to
+		Puzzle Master: Listen to others.
+	- I was told to
+		Puzzle Master: Think for yourself.
+	Puzzle Master: Have we had this conversation before?
+	- Yes
+	- No
+	Puzzle Master: Excellent
+	Puzzle Master: What is the square root of 77299264?
+	- 8792
+		Puzzle Master: Correct
+	- 8364
+		Puzzle Master: Incorrect => END
+	Puzzle Master: What is the meaning of life?
+	- 42
+		Puzzle Master: Incorrect => END
+	- There is no correct answer
+		Puzzle Master: Correct
+	Puzzle Master: How many options do you have?
+	- 1
+		Puzzle Master: Correct
+	- 2
+		Puzzle Master: Correct
+	Puzzle Master: Is this enough questions?
+	- Yes
+		Puzzle Master: Okay => END
+	- No
+		Puzzle Master: Sure
+	Puzzle Master: How many times have your choices mattered in this?
+	- 4
+		Puzzle Master: Correct
+	- 5
+		Puzzle Master: Incorrect => END
+	Puzzle Master: Have I really asked you riddles?
+	- Yes
+		Puzzle Master: ???? => END
+	- No
+		Puzzle Master: Correct
+	Puzzle Master: That's enough.
+	set hook_reward = true
+else
+	if hook_reward == true
+		Puzzle Master: Have this cake.
+		do spawn_lmon_cake()
+		Puzzle Master: Throwing it will allow you to grapple to points.
+	else
+		Puzzle Master: I have nothing else for you."
+errors = [  ]
+titles = {
+"CannonQuest": "58",
+"Doom": "78",
+"Hook": "84",
+"Sell": "1",
+"Setup": "15"
+}
+lines = {
+"0": {
+"next_id": "1",
+"text": "Sell",
+"type": "title"
+},
+"1": {
+"character": "Sailsman",
+"character_replacements": [  ],
+"next_id": "2",
+"replacements": [  ],
+"text": "[wave amp=25 freq=5] [[Nice weather we're having|Good day|Howdy]]! [/wave]",
+"translation_key": "[wave amp=25 freq=5] [[Nice weather we're having|Good day|Howdy]]! [/wave]",
+"type": "dialogue"
+},
+"10": {
+"character": "Sailsman",
+"character_replacements": [  ],
+"next_id": "end!",
+"parent_id": "8",
+"replacements": [  ],
+"text": "Come back when you have more [wave amp=25 freq=5]golden orbs[/wave].",
+"translation_key": "Come back when you have more [wave amp=25 freq=5]golden orbs[/wave].",
+"type": "dialogue"
+},
+"100": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "101",
+"parent_id": "84",
+"replacements": [  ],
+"text": "What is the meaning of life?",
+"translation_key": "What is the meaning of life?",
+"type": "dialogue"
+},
+"101": {
+"next_id": "102",
+"next_id_after": "105",
+"parent_id": "84",
+"replacements": [  ],
+"responses": PoolStringArray( "101", "103" ),
+"text": "42",
+"translation_key": "42",
+"type": "response"
+},
+"102": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "105",
+"parent_id": "101",
+"replacements": [  ],
+"text": "Incorrect => END",
+"translation_key": "Incorrect => END",
+"type": "dialogue"
+},
+"103": {
+"next_id": "104",
+"next_id_after": "105",
+"parent_id": "84",
+"replacements": [  ],
+"text": "There is no correct answer",
+"translation_key": "There is no correct answer",
+"type": "response"
+},
+"104": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "105",
+"parent_id": "103",
+"replacements": [  ],
+"text": "Correct",
+"translation_key": "Correct",
+"type": "dialogue"
+},
+"105": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "106",
+"parent_id": "84",
+"replacements": [  ],
+"text": "How many options do you have?",
+"translation_key": "How many options do you have?",
+"type": "dialogue"
+},
+"106": {
+"next_id": "107",
+"next_id_after": "110",
+"parent_id": "84",
+"replacements": [  ],
+"responses": PoolStringArray( "106", "108" ),
+"text": "1",
+"translation_key": "1",
+"type": "response"
+},
+"107": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "110",
+"parent_id": "106",
+"replacements": [  ],
+"text": "Correct",
+"translation_key": "Correct",
+"type": "dialogue"
+},
+"108": {
+"next_id": "109",
+"next_id_after": "110",
+"parent_id": "84",
+"replacements": [  ],
+"text": "2",
+"translation_key": "2",
+"type": "response"
+},
+"109": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "110",
+"parent_id": "108",
+"replacements": [  ],
+"text": "Correct",
+"translation_key": "Correct",
+"type": "dialogue"
+},
+"110": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "111",
+"parent_id": "84",
+"replacements": [  ],
+"text": "Is this enough questions?",
+"translation_key": "Is this enough questions?",
+"type": "dialogue"
+},
+"111": {
+"next_id": "112",
+"next_id_after": "115",
+"parent_id": "84",
+"replacements": [  ],
+"responses": PoolStringArray( "111", "113" ),
+"text": "Yes",
+"translation_key": "Yes",
+"type": "response"
+},
+"112": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "115",
+"parent_id": "111",
+"replacements": [  ],
+"text": "Okay => END",
+"translation_key": "Okay => END",
+"type": "dialogue"
+},
+"113": {
+"next_id": "114",
+"next_id_after": "115",
+"parent_id": "84",
+"replacements": [  ],
+"text": "No",
+"translation_key": "No",
+"type": "response"
+},
+"114": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "115",
+"parent_id": "113",
+"replacements": [  ],
+"text": "Sure",
+"translation_key": "Sure",
+"type": "dialogue"
+},
+"115": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "116",
+"parent_id": "84",
+"replacements": [  ],
+"text": "How many times have your choices mattered in this?",
+"translation_key": "How many times have your choices mattered in this?",
+"type": "dialogue"
+},
+"116": {
+"next_id": "117",
+"next_id_after": "120",
+"parent_id": "84",
+"replacements": [  ],
+"responses": PoolStringArray( "116", "118" ),
+"text": "4",
+"translation_key": "4",
+"type": "response"
+},
+"117": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "120",
+"parent_id": "116",
+"replacements": [  ],
+"text": "Correct",
+"translation_key": "Correct",
+"type": "dialogue"
+},
+"118": {
+"next_id": "119",
+"next_id_after": "120",
+"parent_id": "84",
+"replacements": [  ],
+"text": "5",
+"translation_key": "5",
+"type": "response"
+},
+"119": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "120",
+"parent_id": "118",
+"replacements": [  ],
+"text": "Incorrect => END",
+"translation_key": "Incorrect => END",
+"type": "dialogue"
+},
+"12": {
+"next_id": "end!",
+"next_id_after": "end!",
+"replacements": [  ],
+"text": "nope",
+"translation_key": "nope",
+"type": "response"
+},
+"120": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "121",
+"parent_id": "84",
+"replacements": [  ],
+"text": "Have I really asked you riddles?",
+"translation_key": "Have I really asked you riddles?",
+"type": "dialogue"
+},
+"121": {
+"next_id": "122",
+"next_id_after": "125",
+"parent_id": "84",
+"replacements": [  ],
+"responses": PoolStringArray( "121", "123" ),
+"text": "Yes",
+"translation_key": "Yes",
+"type": "response"
+},
+"122": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "125",
+"parent_id": "121",
+"replacements": [  ],
+"text": "???? => END",
+"translation_key": "???? => END",
+"type": "dialogue"
+},
+"123": {
+"next_id": "124",
+"next_id_after": "125",
+"parent_id": "84",
+"replacements": [  ],
+"text": "No",
+"translation_key": "No",
+"type": "response"
+},
+"124": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "125",
+"parent_id": "123",
+"replacements": [  ],
+"text": "Correct",
+"translation_key": "Correct",
+"type": "dialogue"
+},
+"125": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "126",
+"parent_id": "84",
+"replacements": [  ],
+"text": "That's enough.",
+"translation_key": "That's enough.",
+"type": "dialogue"
+},
+"126": {
+"mutation": {
+"expression": [ {
+"type": "variable",
+"value": "hook_reward"
+}, {
+"type": "assignment",
+"value": "="
+}, {
+"type": "bool",
+"value": true
+} ]
+},
+"next_id": "end!",
+"parent_id": "84",
+"type": "mutation"
+},
+"127": {
+"next_conditional_id": "end!",
+"next_id": "128",
+"next_id_after": "end!",
+"type": "condition"
+},
+"128": {
+"condition": {
+"expression": [ {
+"type": "variable",
+"value": "hook_reward"
+}, {
+"type": "comparison",
+"value": "=="
+}, {
+"type": "bool",
+"value": true
+} ]
+},
+"next_conditional_id": "132",
+"next_id": "129",
+"next_id_after": "end!",
+"parent_id": "127",
+"type": "condition"
+},
+"129": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "130",
+"parent_id": "128",
+"replacements": [  ],
+"text": "Have this cake.",
+"translation_key": "Have this cake.",
+"type": "dialogue"
+},
+"130": {
+"mutation": {
+"expression": [ {
+"function": "spawn_lmon_cake",
+"type": "function",
+"value": [  ]
+} ]
+},
+"next_id": "131",
+"parent_id": "128",
+"type": "mutation"
+},
+"131": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "end!",
+"parent_id": "128",
+"replacements": [  ],
+"text": "Throwing it will allow you to grapple to points.",
+"translation_key": "Throwing it will allow you to grapple to points.",
+"type": "dialogue"
+},
+"132": {
+"next_conditional_id": "end!",
+"next_id": "133",
+"next_id_after": "end!",
+"parent_id": "127",
+"type": "condition"
+},
+"133": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "end!",
+"parent_id": "132",
+"replacements": [  ],
+"text": "I have nothing else for you.",
+"translation_key": "I have nothing else for you.",
+"type": "dialogue"
+},
+"14": {
+"next_id": "15",
+"text": "Setup",
+"type": "title"
+},
+"15": {
+"condition": {
+"expression": [ {
+"type": "variable",
+"value": "has_talked_to_tutorial"
+}, {
+"type": "comparison",
+"value": "=="
+}, {
+"type": "bool",
+"value": false
+} ]
+},
+"next_conditional_id": "38",
+"next_id": "16",
+"next_id_after": "end!",
+"type": "condition"
+},
+"16": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "17",
+"parent_id": "15",
+"replacements": [  ],
+"text": "Say, are you the harbinger?",
+"translation_key": "Say, are you the harbinger?",
+"type": "dialogue"
+},
+"17": {
+"next_id": "19",
+"next_id_after": "19",
+"parent_id": "15",
+"replacements": [  ],
+"responses": PoolStringArray( "17", "18" ),
+"text": "absolutely",
+"translation_key": "absolutely",
+"type": "response"
+},
+"18": {
+"next_id": "19",
+"next_id_after": "19",
+"parent_id": "15",
+"replacements": [  ],
+"text": "yep",
+"translation_key": "yep",
+"type": "response"
+},
+"19": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "20",
+"parent_id": "15",
+"replacements": [  ],
+"text": "I knew it!",
+"translation_key": "I knew it!",
+"type": "dialogue"
+},
+"2": {
+"character": "Sailsman",
+"character_replacements": [  ],
+"next_id": "3",
+"replacements": [  ],
+"text": "Would you like to [shake rate=20 level=10] BUY [/shake] a leaf?",
+"translation_key": "Would you like to [shake rate=20 level=10] BUY [/shake] a leaf?",
+"type": "dialogue"
+},
+"20": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "21",
+"parent_id": "15",
+"replacements": [  ],
+"text": "We have awaited your arrival for [shake rate=20 level=10]many decades[/shake].",
+"translation_key": "We have awaited your arrival for [shake rate=20 level=10]many decades[/shake].",
+"type": "dialogue"
+},
+"21": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "22",
+"parent_id": "15",
+"replacements": [  ],
+"text": "They imprisoned it behind a [speed=0.2][wave amp=25 freq=5]OBSTACLE COURSE[/wave]!",
+"translation_key": "They imprisoned it behind a [speed=0.2][wave amp=25 freq=5]OBSTACLE COURSE[/wave]!",
+"type": "dialogue"
+},
+"22": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "23",
+"parent_id": "15",
+"replacements": [  ],
+"text": "Luckily, the fools left a convenient amount-",
+"translation_key": "Luckily, the fools left a convenient amount-",
+"type": "dialogue"
+},
+"23": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "24",
+"parent_id": "15",
+"replacements": [  ],
+"text": "of leaves lying around.",
+"translation_key": "of leaves lying around.",
+"type": "dialogue"
+},
+"24": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "25",
+"parent_id": "15",
+"replacements": [  ],
+"text": "The kobolds have gathered most of them so buying-",
+"translation_key": "The kobolds have gathered most of them so buying-",
+"type": "dialogue"
+},
+"25": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "26",
+"parent_id": "15",
+"replacements": [  ],
+"text": "them will be [wave amp=25 freq=5]necessary[/wave].",
+"translation_key": "them will be [wave amp=25 freq=5]necessary[/wave].",
+"type": "dialogue"
+},
+"26": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "27",
+"parent_id": "15",
+"replacements": [  ],
+"text": "The leaves will upgrade your float.",
+"translation_key": "The leaves will upgrade your float.",
+"type": "dialogue"
+},
+"27": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "28",
+"parent_id": "15",
+"replacements": [  ],
+"text": "Now for your cakes.",
+"translation_key": "Now for your cakes.",
+"type": "dialogue"
+},
+"28": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "29",
+"parent_id": "15",
+"replacements": [  ],
+"text": "We have one left, but you will have to aquire the other two.",
+"translation_key": "We have one left, but you will have to aquire the other two.",
+"type": "dialogue"
+},
+"29": {
+"mutation": {
+"expression": [ {
+"function": "add_cake",
+"type": "function",
+"value": [  ]
+} ]
+},
+"next_id": "30",
+"parent_id": "15",
+"type": "mutation"
+},
+"3": {
+"next_id": "4",
+"next_id_after": "end!",
+"replacements": [  ],
+"responses": PoolStringArray( "3", "12" ),
+"text": "sure",
+"translation_key": "sure",
+"type": "response"
+},
+"30": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "31",
+"parent_id": "15",
+"replacements": [  ],
+"text": "Do you remember how to use them?",
+"translation_key": "Do you remember how to use them?",
+"type": "dialogue"
+},
+"31": {
+"next_id": "35",
+"next_id_after": "35",
+"parent_id": "15",
+"replacements": [  ],
+"responses": PoolStringArray( "31", "32" ),
+"text": "absolutely",
+"translation_key": "absolutely",
+"type": "response"
+},
+"32": {
+"next_id": "33",
+"next_id_after": "35",
+"parent_id": "15",
+"replacements": [  ],
+"text": "partly",
+"translation_key": "partly",
+"type": "response"
+},
+"33": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "34",
+"parent_id": "32",
+"replacements": [  ],
+"text": "Focus intently on the letter [wave amp=25 freq=5]K[/wave] to throw it.",
+"translation_key": "Focus intently on the letter [wave amp=25 freq=5]K[/wave] to throw it.",
+"type": "dialogue"
+},
+"34": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "35",
+"parent_id": "32",
+"replacements": [  ],
+"text": "Focus on the letter [wave amp=25 freq=5]L[/wave] to swap cakes.",
+"translation_key": "Focus on the letter [wave amp=25 freq=5]L[/wave] to swap cakes.",
+"type": "dialogue"
+},
+"35": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "36",
+"parent_id": "15",
+"replacements": [  ],
+"text": "Just talk to me again if you forget something.",
+"translation_key": "Just talk to me again if you forget something.",
+"type": "dialogue"
+},
+"36": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "37",
+"parent_id": "15",
+"replacements": [  ],
+"text": "Now, it awaits it's freedom in the bay.",
+"translation_key": "Now, it awaits it's freedom in the bay.",
+"type": "dialogue"
+},
+"37": {
+"mutation": {
+"expression": [ {
+"type": "variable",
+"value": "has_talked_to_tutorial"
+}, {
+"type": "assignment",
+"value": "="
+}, {
+"type": "bool",
+"value": true
+} ]
+},
+"next_id": "end!",
+"parent_id": "15",
+"type": "mutation"
+},
+"38": {
+"next_conditional_id": "end!",
+"next_id": "39",
+"next_id_after": "end!",
+"type": "condition"
+},
+"39": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "40",
+"parent_id": "38",
+"replacements": [  ],
+"text": "Have you [[forgotten|lapsed|buried|abandoned]] something I told you?",
+"translation_key": "Have you [[forgotten|lapsed|buried|abandoned]] something I told you?",
+"type": "dialogue"
+},
+"4": {
+"condition": {
+"expression": [ {
+"type": "variable",
+"value": "money"
+}, {
+"type": "comparison",
+"value": ">="
+}, {
+"type": "number",
+"value": 120
+} ]
+},
+"next_conditional_id": "8",
+"next_id": "5",
+"next_id_after": "end!",
+"parent_id": "3",
+"type": "condition"
+},
+"40": {
+"next_id": "41",
+"next_id_after": "54",
+"parent_id": "38",
+"replacements": [  ],
+"responses": PoolStringArray( "40", "42" ),
+"text": "no",
+"translation_key": "no",
+"type": "response"
+},
+"41": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "54",
+"parent_id": "40",
+"replacements": [  ],
+"text": "strange[next=auto]",
+"translation_key": "strange[next=auto]",
+"type": "dialogue"
+},
+"42": {
+"next_id": "43",
+"next_id_after": "54",
+"parent_id": "38",
+"replacements": [  ],
+"text": "yes",
+"translation_key": "yes",
+"type": "response"
+},
+"43": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "44",
+"parent_id": "42",
+"replacements": [  ],
+"text": "Have you [[forgotten|lapsed|buried|abandoned]] what to do?",
+"translation_key": "Have you [[forgotten|lapsed|buried|abandoned]] what to do?",
+"type": "dialogue"
+},
+"44": {
+"next_id": "45",
+"next_id_after": "54",
+"parent_id": "42",
+"replacements": [  ],
+"responses": PoolStringArray( "44", "48" ),
+"text": "yes",
+"translation_key": "yes",
+"type": "response"
+},
+"45": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "46",
+"parent_id": "44",
+"replacements": [  ],
+"text": "Collect money for leaves.",
+"translation_key": "Collect money for leaves.",
+"type": "dialogue"
+},
+"46": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "47",
+"parent_id": "44",
+"replacements": [  ],
+"text": "Obtain the other two cakes.",
+"translation_key": "Obtain the other two cakes.",
+"type": "dialogue"
+},
+"47": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "54",
+"parent_id": "44",
+"replacements": [  ],
+"text": "Free [shake rate=20 level=10]IT[/shake]!",
+"translation_key": "Free [shake rate=20 level=10]IT[/shake]!",
+"type": "dialogue"
+},
+"48": {
+"next_id": "49",
+"next_id_after": "54",
+"parent_id": "42",
+"replacements": [  ],
+"text": "no",
+"translation_key": "no",
+"type": "response"
+},
+"49": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "50",
+"parent_id": "48",
+"replacements": [  ],
+"text": "Have you [[forgotten|lapsed|buried|abandoned]] how to use the cakes?",
+"translation_key": "Have you [[forgotten|lapsed|buried|abandoned]] how to use the cakes?",
+"type": "dialogue"
+},
+"5": {
+"mutation": {
+"expression": [ {
+"function": "charge",
+"type": "function",
+"value": [  ]
+} ]
+},
+"next_id": "6",
+"parent_id": "4",
+"type": "mutation"
+},
+"50": {
+"next_id": "51",
+"next_id_after": "54",
+"parent_id": "48",
+"replacements": [  ],
+"responses": PoolStringArray( "50", "53" ),
+"text": "yes",
+"translation_key": "yes",
+"type": "response"
+},
+"51": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "52",
+"parent_id": "50",
+"replacements": [  ],
+"text": "Focus intently on the letter [wave amp=25 freq=5]K[/wave] to throw it.",
+"translation_key": "Focus intently on the letter [wave amp=25 freq=5]K[/wave] to throw it.",
+"type": "dialogue"
+},
+"52": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "54",
+"parent_id": "50",
+"replacements": [  ],
+"text": "Focus on the letter [wave amp=25 freq=5]L[/wave] to swap cakes.",
+"translation_key": "Focus on the letter [wave amp=25 freq=5]L[/wave] to swap cakes.",
+"type": "dialogue"
+},
+"53": {
+"next_id": "54",
+"next_id_after": "54",
+"parent_id": "48",
+"replacements": [  ],
+"text": "no",
+"translation_key": "no",
+"type": "response"
+},
+"54": {
+"character": "Strange Old Man",
+"character_replacements": [  ],
+"next_id": "end!",
+"parent_id": "38",
+"replacements": [  ],
+"text": "Now, it awaits it's freedom in the bay.",
+"translation_key": "Now, it awaits it's freedom in the bay.",
+"type": "dialogue"
+},
+"57": {
+"next_id": "58",
+"text": "CannonQuest",
+"type": "title"
+},
+"58": {
+"condition": {
+"expression": [ {
+"type": "variable",
+"value": "cannon_task_done"
+}, {
+"type": "comparison",
+"value": "=="
+}, {
+"type": "bool",
+"value": false
+} ]
+},
+"next_conditional_id": "68",
+"next_id": "59",
+"next_id_after": "end!",
+"type": "condition"
+},
+"59": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "60",
+"parent_id": "58",
+"replacements": [  ],
+"text": "Aye Matey, I need thine help.",
+"translation_key": "Aye Matey, I need thine help.",
+"type": "dialogue"
+},
+"6": {
+"character": "Sailsman",
+"character_replacements": [  ],
+"next_id": "7",
+"parent_id": "4",
+"replacements": [  ],
+"text": "Here you go!",
+"translation_key": "Here you go!",
+"type": "dialogue"
+},
+"60": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "61",
+"parent_id": "58",
+"replacements": [  ],
+"text": "My cannon here needs to be aligned.",
+"translation_key": "My cannon here needs to be aligned.",
+"type": "dialogue"
+},
+"61": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "62",
+"parent_id": "58",
+"replacements": [  ],
+"text": "I need you to find three switches around tis island.",
+"translation_key": "I need you to find three switches around tis island.",
+"type": "dialogue"
+},
+"62": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "63",
+"parent_id": "58",
+"replacements": [  ],
+"text": "Then, I need you to thwack them all in 45 seconds.",
+"translation_key": "Then, I need you to thwack them all in 45 seconds.",
+"type": "dialogue"
+},
+"63": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "64",
+"parent_id": "58",
+"replacements": [  ],
+"text": "In return, I'll give you this here [wave amp=25 freq=5]cake[/wave].",
+"translation_key": "In return, I'll give you this here [wave amp=25 freq=5]cake[/wave].",
+"type": "dialogue"
+},
+"64": {
+"next_id": "65",
+"next_id_after": "67",
+"parent_id": "58",
+"replacements": [  ],
+"responses": PoolStringArray( "64", "66" ),
+"text": "Do I have a choice?",
+"translation_key": "Do I have a choice?",
+"type": "response"
+},
+"65": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "67",
+"parent_id": "64",
+"replacements": [  ],
+"text": "...",
+"translation_key": "...",
+"type": "dialogue"
+},
+"66": {
+"next_id": "67",
+"next_id_after": "67",
+"parent_id": "58",
+"replacements": [  ],
+"text": "sure",
+"translation_key": "sure",
+"type": "response"
+},
+"67": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "end!",
+"parent_id": "58",
+"replacements": [  ],
+"text": "Come back to me when you've done it!",
+"translation_key": "Come back to me when you've done it!",
+"type": "dialogue"
+},
+"68": {
+"next_conditional_id": "end!",
+"next_id": "69",
+"next_id_after": "end!",
+"type": "condition"
+},
+"69": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "70",
+"parent_id": "68",
+"replacements": [  ],
+"text": "Thanks for the help!",
+"translation_key": "Thanks for the help!",
+"type": "dialogue"
+},
+"7": {
+"character": "Sailsman",
+"character_replacements": [  ],
+"next_id": "end!",
+"parent_id": "4",
+"replacements": [  ],
+"text": "Come back so I can make more [wave amp=25 freq=5]shinies[/wave].",
+"translation_key": "Come back so I can make more [wave amp=25 freq=5]shinies[/wave].",
+"type": "dialogue"
+},
+"70": {
+"condition": {
+"expression": [ {
+"type": "variable",
+"value": "cannon_reward"
+}, {
+"type": "comparison",
+"value": "=="
+}, {
+"type": "bool",
+"value": false
+} ]
+},
+"next_conditional_id": "end!",
+"next_id": "71",
+"next_id_after": "end!",
+"parent_id": "68",
+"type": "condition"
+},
+"71": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "72",
+"parent_id": "70",
+"replacements": [  ],
+"text": "Here be thine reward!",
+"translation_key": "Here be thine reward!",
+"type": "dialogue"
+},
+"72": {
+"mutation": {
+"expression": [ {
+"function": "spawn_boom_cake",
+"type": "function",
+"value": [  ]
+} ]
+},
+"next_id": "73",
+"parent_id": "70",
+"type": "mutation"
+},
+"73": {
+"mutation": {
+"expression": [ {
+"type": "variable",
+"value": "cannon_reward"
+}, {
+"type": "assignment",
+"value": "="
+}, {
+"type": "bool",
+"value": true
+} ]
+},
+"next_id": "74",
+"parent_id": "70",
+"type": "mutation"
+},
+"74": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "75",
+"parent_id": "70",
+"replacements": [  ],
+"text": "It'll blow any random rocks to smithereens!",
+"translation_key": "It'll blow any random rocks to smithereens!",
+"type": "dialogue"
+},
+"75": {
+"character": "Captain",
+"character_replacements": [  ],
+"next_id": "end!",
+"parent_id": "70",
+"replacements": [  ],
+"text": "Might also be of some use on [shake rate=20 level=10]IT[/shake]'s seals.",
+"translation_key": "Might also be of some use on [shake rate=20 level=10]IT[/shake]'s seals.",
+"type": "dialogue"
+},
+"77": {
+"next_id": "78",
+"text": "Doom",
+"type": "title"
+},
+"78": {
+"character": "Other Strange Old Man",
+"character_replacements": [  ],
+"next_id": "79",
+"replacements": [  ],
+"text": "This is it!",
+"translation_key": "This is it!",
+"type": "dialogue"
+},
+"79": {
+"character": "Other Strange Old Man",
+"character_replacements": [  ],
+"next_id": "80",
+"replacements": [  ],
+"text": "When you enter the gauntlet,",
+"translation_key": "When you enter the gauntlet,",
+"type": "dialogue"
+},
+"8": {
+"next_conditional_id": "end!",
+"next_id": "9",
+"next_id_after": "end!",
+"parent_id": "3",
+"type": "condition"
+},
+"80": {
+"character": "Other Strange Old Man",
+"character_replacements": [  ],
+"next_id": "81",
+"replacements": [  ],
+"text": "you'll only have 75 seconds to reach [shake rate=20 level=10]IT[/shake]!",
+"translation_key": "you'll only have 75 seconds to reach [shake rate=20 level=10]IT[/shake]!",
+"type": "dialogue"
+},
+"81": {
+"character": "Other Strange Old Man",
+"character_replacements": [  ],
+"next_id": "",
+"replacements": [  ],
+"text": "Free [wave amp=25 freq=5]IT[/wave]!",
+"translation_key": "Free [wave amp=25 freq=5]IT[/wave]!",
+"type": "dialogue"
+},
+"83": {
+"next_id": "84",
+"text": "Hook",
+"type": "title"
+},
+"84": {
+"condition": {
+"expression": [ {
+"type": "variable",
+"value": "hook_task_done"
+}, {
+"type": "comparison",
+"value": "=="
+}, {
+"type": "bool",
+"value": false
+} ]
+},
+"next_conditional_id": "127",
+"next_id": "85",
+"next_id_after": "end!",
+"type": "condition"
+},
+"85": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "86",
+"parent_id": "84",
+"replacements": [  ],
+"text": "Greetings.",
+"translation_key": "Greetings.",
+"type": "dialogue"
+},
+"86": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "87",
+"parent_id": "84",
+"replacements": [  ],
+"text": "Why are you here?",
+"translation_key": "Why are you here?",
+"type": "dialogue"
+},
+"87": {
+"next_id": "88",
+"next_id_after": "91",
+"parent_id": "84",
+"replacements": [  ],
+"responses": PoolStringArray( "87", "89" ),
+"text": "I want to",
+"translation_key": "I want to",
+"type": "response"
+},
+"88": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "91",
+"parent_id": "87",
+"replacements": [  ],
+"text": "Listen to others.",
+"translation_key": "Listen to others.",
+"type": "dialogue"
+},
+"89": {
+"next_id": "90",
+"next_id_after": "91",
+"parent_id": "84",
+"replacements": [  ],
+"text": "I was told to",
+"translation_key": "I was told to",
+"type": "response"
+},
+"9": {
+"character": "Sailsman",
+"character_replacements": [  ],
+"next_id": "10",
+"parent_id": "8",
+"replacements": [  ],
+"text": "It doesn't look like you have enough [wave amp=25 freq=5]shinies[/wave].",
+"translation_key": "It doesn't look like you have enough [wave amp=25 freq=5]shinies[/wave].",
+"type": "dialogue"
+},
+"90": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "91",
+"parent_id": "89",
+"replacements": [  ],
+"text": "Think for yourself.",
+"translation_key": "Think for yourself.",
+"type": "dialogue"
+},
+"91": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "92",
+"parent_id": "84",
+"replacements": [  ],
+"text": "Have we had this conversation before?",
+"translation_key": "Have we had this conversation before?",
+"type": "dialogue"
+},
+"92": {
+"next_id": "94",
+"next_id_after": "94",
+"parent_id": "84",
+"replacements": [  ],
+"responses": PoolStringArray( "92", "93" ),
+"text": "Yes",
+"translation_key": "Yes",
+"type": "response"
+},
+"93": {
+"next_id": "94",
+"next_id_after": "94",
+"parent_id": "84",
+"replacements": [  ],
+"text": "No",
+"translation_key": "No",
+"type": "response"
+},
+"94": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "95",
+"parent_id": "84",
+"replacements": [  ],
+"text": "Excellent",
+"translation_key": "Excellent",
+"type": "dialogue"
+},
+"95": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "96",
+"parent_id": "84",
+"replacements": [  ],
+"text": "What is the square root of 77299264?",
+"translation_key": "What is the square root of 77299264?",
+"type": "dialogue"
+},
+"96": {
+"next_id": "97",
+"next_id_after": "100",
+"parent_id": "84",
+"replacements": [  ],
+"responses": PoolStringArray( "96", "98" ),
+"text": "8792",
+"translation_key": "8792",
+"type": "response"
+},
+"97": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "100",
+"parent_id": "96",
+"replacements": [  ],
+"text": "Correct",
+"translation_key": "Correct",
+"type": "dialogue"
+},
+"98": {
+"next_id": "99",
+"next_id_after": "100",
+"parent_id": "84",
+"replacements": [  ],
+"text": "8364",
+"translation_key": "8364",
+"type": "response"
+},
+"99": {
+"character": "Puzzle Master",
+"character_replacements": [  ],
+"next_id": "100",
+"parent_id": "98",
+"replacements": [  ],
+"text": "Incorrect => END",
+"translation_key": "Incorrect => END",
+"type": "dialogue"
+}
+}

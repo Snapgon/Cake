@@ -1,0 +1,153 @@
+[gd_scene load_steps=8 format=2]
+
+[ext_resource path="res://Gui/eurofurence/eurof35.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://Gui/Menu.gd" type="Script" id=2]
+[ext_resource path="res://Gui/credits.gd" type="Script" id=3]
+
+[sub_resource type="DynamicFont" id=1]
+size = 32
+use_mipmaps = true
+use_filter = true
+extra_spacing_char = 2
+extra_spacing_space = -2
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxFlat" id=2]
+bg_color = Color( 0.270588, 0.431373, 0.537255, 1 )
+skew = Vector2( 0.2, 0 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 0.984314, 0.858824, 1 )
+border_blend = true
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 13
+expand_margin_left = 1.0
+expand_margin_right = 1.0
+expand_margin_top = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 1
+shadow_offset = Vector2( 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=3]
+bg_color = Color( 0.0509804, 0.517647, 0.827451, 1 )
+skew = Vector2( 0.2, 0 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 0.984314, 0.858824, 1 )
+border_blend = true
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 13
+expand_margin_left = 1.0
+expand_margin_right = 1.0
+expand_margin_top = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 1
+shadow_offset = Vector2( 1, 1 )
+
+[sub_resource type="Theme" id=4]
+default_font = SubResource( 1 )
+Button/colors/font_color = Color( 1, 0.984314, 0.858824, 1 )
+Button/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+Button/colors/font_color_focus = Color( 0.937255, 0.513726, 0.329412, 1 )
+Button/colors/font_color_hover = Color( 0.937255, 0.513726, 0.329412, 1 )
+Button/colors/font_color_pressed = Color( 1, 0.984314, 0.858824, 1 )
+Button/constants/hseparation = 0
+Button/fonts/font = SubResource( 1 )
+Button/styles/disabled = SubResource( 2 )
+Button/styles/focus = SubResource( 3 )
+Button/styles/hover = SubResource( 3 )
+Button/styles/normal = SubResource( 3 )
+Button/styles/pressed = SubResource( 3 )
+
+[node name="Credits" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+script = ExtResource( 2 )
+_path = "Credits"
+
+[node name="Label" type="Label" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -347.0
+margin_top = 388.0
+margin_right = 347.0
+margin_bottom = 2509.0
+grow_horizontal = 2
+rect_min_size = Vector2( 500, 1000 )
+theme = SubResource( 4 )
+text = "And so the dark lord escaped its prison,
+plunging the world into the 
+AGE OF CAKE
+
+Thanks for Playing!
+
+
+
+CREDITS
+----------------------
+
+Game Dev
+------
+Snapgon
+
+
+MADE WITH GODOT
+
+MODELS MADE IN BLENDER
+
+TEXTURES MADE IN KRITA
+
+Asset Use Credits
+
+Fonts
+------
+Eurofurence- Tobias Benjamin Köhler
+Cavalier-Vladimir Nikolic
+
+Music
+------
+A New Day's Hurry- Composed by One Man Symphony
+
+Shaders
+-----
+
+Godotshaders.com shaders
+
+Kuwahara-FrankTheApe
+Edge Detection-kostilus
+Water-NekotoArts
+
+Other Shaders
+
+Color Limiter-thebuffed
+Wind Sway-Maujoe
+
+Addons
+------
+
+Dialogue Manager-nathanhoad
+Spatial Gardener-Dreadpon
+Heightmap Terrain-Marc Gilleron
+LOD Manager-R3X-G1L6AME5H
+
+SFX
+-----
+Chiptone-SFB Games
+
+
+Once again, thanks for playing. 
+I really hope you enjoyed this short experience."
+align = 1
+script = ExtResource( 3 )

@@ -1,0 +1,272 @@
+[gd_scene load_steps=24 format=2]
+
+[ext_resource path="res://Game/Character/Character.gd" type="Script" id=1]
+[ext_resource path="res://Game/Character/Raycastr.gd" type="Script" id=2]
+[ext_resource path="res://Models/Player.tscn" type="PackedScene" id=3]
+[ext_resource path="res://SFX/AudioStreamPlayer.tscn" type="PackedScene" id=4]
+[ext_resource path="res://SFX/Death.wav" type="AudioStream" id=5]
+[ext_resource path="res://Game/Character/Camera.gd" type="Script" id=6]
+[ext_resource path="res://Game/Character/CakeBrain.gd" type="Script" id=7]
+[ext_resource path="res://Game/Character/Interactive Controller.gd" type="Script" id=8]
+[ext_resource path="res://SFX/Jump.wav" type="AudioStream" id=9]
+[ext_resource path="res://SFX/Land.wav" type="AudioStream" id=10]
+[ext_resource path="res://SFX/Dash.wav" type="AudioStream" id=11]
+[ext_resource path="res://SFX/Explosion.wav" type="AudioStream" id=12]
+[ext_resource path="res://SFX/CakeGet.wav" type="AudioStream" id=13]
+
+[sub_resource type="CapsuleShape" id=4]
+
+[sub_resource type="Animation" id=9]
+resource_name = "Float"
+length = 0.3
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("Player:translation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("Player:translation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( -1.299, -0.25, 0, 0.1, 0.0919396, -0.75, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("Player:translation:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+
+[sub_resource type="Animation" id=10]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("Player:translation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("Player:translation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( -1.29939, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("Player:translation:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=11]
+resource_name = "Unfloat"
+length = 0.3
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("Player:translation:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("Player:translation:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( -0.75, -0.25, 0, 0.3, -0.138928, -1.299, -0.4, 0.0509139, 0.8, 0.0143452 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("Player:translation:z")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.3 )
+}
+
+[sub_resource type="Curve" id=12]
+_data = [ Vector2( 0, 1 ), 0.0, 0.0, 0, 0, Vector2( 1, 0 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="CurveTexture" id=13]
+curve = SubResource( 12 )
+
+[sub_resource type="ParticlesMaterial" id=14]
+emission_shape = 1
+emission_sphere_radius = 0.2
+gravity = Vector3( 0, 1.2, 0 )
+scale_random = 1.0
+scale_curve = SubResource( 13 )
+
+[sub_resource type="SpatialMaterial" id=7]
+albedo_color = Color( 0.372549, 0.372549, 0.372549, 1 )
+
+[sub_resource type="SphereMesh" id=15]
+material = SubResource( 7 )
+radius = 0.3
+height = 0.6
+
+[sub_resource type="SphereShape" id=16]
+radius = 6.348
+
+[node name="Character" type="KinematicBody" groups=["character", "check"]]
+collision_layer = 8388609
+collision_mask = 8388609
+script = ExtResource( 1 )
+walk_speed = 8
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0.2, 0 )
+shape = SubResource( 4 )
+
+[node name="JumpBuffer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Float = SubResource( 9 )
+anims/RESET = SubResource( 10 )
+anims/Unfloat = SubResource( 11 )
+
+[node name="Spatial" type="Spatial" parent="."]
+script = ExtResource( 2 )
+
+[node name="RayCast" type="RayCast" parent="Spatial"]
+enabled = true
+cast_to = Vector3( 0, -2, 0 )
+collision_mask = 2
+
+[node name="Player" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1.75, 0, 0, 0, 1.75, 0, 0, 0, 1.75, 0, -1.29939, 0 )
+
+[node name="Particles" type="Particles" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1.29242, 0 )
+layers = 2
+emitting = false
+local_coords = false
+process_material = SubResource( 14 )
+draw_pass_1 = SubResource( 15 )
+
+[node name="CakeBrain" type="Node" parent="."]
+script = ExtResource( 7 )
+
+[node name="CakeCooldown" type="Timer" parent="CakeBrain"]
+wait_time = 0.5
+one_shot = true
+
+[node name="Timer" type="Timer" parent="CakeBrain"]
+wait_time = 0.3
+one_shot = true
+
+[node name="SwitchBuffer" type="Timer" parent="CakeBrain"]
+wait_time = 0.4
+one_shot = true
+
+[node name="Interactive Controller" type="Spatial" parent="."]
+script = ExtResource( 8 )
+
+[node name="Area" type="Area" parent="Interactive Controller"]
+collision_layer = 8
+collision_mask = 8
+
+[node name="CollisionShape" type="CollisionShape" parent="Interactive Controller/Area"]
+shape = SubResource( 16 )
+
+[node name="RayCast" type="RayCast" parent="Interactive Controller"]
+enabled = true
+cast_to = Vector3( -5, 0, 0 )
+collision_mask = 8
+debug_shape_thickness = 5
+
+[node name="Timer" type="Timer" parent="Interactive Controller"]
+wait_time = 0.3
+one_shot = true
+
+[node name="Spatial2" type="Spatial" parent="."]
+
+[node name="Camera" type="ClippedCamera" parent="Spatial2"]
+transform = Transform( 1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 8, 12 )
+doppler_tracking = 2
+far = 8192.0
+collision_mask = 4194304
+script = ExtResource( 6 )
+height = 16
+x_ = 24
+
+[node name="Player_Position" type="Position3D" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.23
+one_shot = true
+
+[node name="AudioPlayer" type="Node" parent="."]
+
+[node name="AudioStreamPlayer" parent="AudioPlayer" instance=ExtResource( 4 )]
+stream = ExtResource( 5 )
+
+[node name="AudioStreamPlayer2" parent="AudioPlayer" instance=ExtResource( 4 )]
+stream = ExtResource( 9 )
+volume_db = -8.723
+variation = 0.4
+
+[node name="AudioStreamPlayer3" parent="AudioPlayer" instance=ExtResource( 4 )]
+stream = ExtResource( 10 )
+
+[node name="AudioStreamPlayer4" parent="AudioPlayer" instance=ExtResource( 4 )]
+stream = ExtResource( 11 )
+volume_db = -5.303
+normal_range = 1.3
+
+[node name="AudioStreamPlayer5" parent="AudioPlayer" instance=ExtResource( 4 )]
+stream = ExtResource( 12 )
+volume_db = 12.077
+
+[node name="AudioStreamPlayer6" parent="AudioPlayer" instance=ExtResource( 4 )]
+stream = ExtResource( 13 )
+
+[node name="Timer2" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
+[connection signal="timeout" from="JumpBuffer" to="." method="_on_JumpBuffer_timeout"]
+[connection signal="timeout" from="CakeBrain/CakeCooldown" to="CakeBrain" method="_on_CakeCooldown_timeout"]
+[connection signal="timeout" from="CakeBrain/Timer" to="CakeBrain" method="_on_Timer_timeout"]
+[connection signal="timeout" from="CakeBrain/SwitchBuffer" to="CakeBrain" method="_on_SwitchBuffer_timeout"]
+[connection signal="area_entered" from="Interactive Controller/Area" to="Interactive Controller" method="_on_Area_area_entered"]
+[connection signal="body_entered" from="Interactive Controller/Area" to="Interactive Controller" method="_on_Area_body_entered"]
+[connection signal="body_exited" from="Interactive Controller/Area" to="Interactive Controller" method="_on_Area_body_exited"]
+[connection signal="timeout" from="Interactive Controller/Timer" to="Interactive Controller" method="_on_Timer_timeout"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]
+[connection signal="timeout" from="Timer2" to="." method="_on_Timer2_timeout"]

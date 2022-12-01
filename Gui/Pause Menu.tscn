@@ -1,0 +1,160 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Gui/Menu.gd" type="Script" id=1]
+[ext_resource path="res://Gui/eurofurence/eurof35.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://Gui/Button.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Gui/SwitchButton.gd" type="Script" id=4]
+[ext_resource path="res://Gui/Pause Button.gd" type="Script" id=5]
+
+[sub_resource type="DynamicFont" id=5]
+size = 32
+use_mipmaps = true
+use_filter = true
+extra_spacing_char = 2
+extra_spacing_space = -2
+font_data = ExtResource( 2 )
+
+[sub_resource type="StyleBoxFlat" id=6]
+bg_color = Color( 0.270588, 0.431373, 0.537255, 1 )
+skew = Vector2( 0.2, 0 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 0.984314, 0.858824, 1 )
+border_blend = true
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 13
+expand_margin_left = 1.0
+expand_margin_right = 1.0
+expand_margin_top = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 1
+shadow_offset = Vector2( 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 0.0509804, 0.517647, 0.827451, 1 )
+skew = Vector2( 0.2, 0 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color( 1, 0.984314, 0.858824, 1 )
+border_blend = true
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+corner_detail = 13
+expand_margin_left = 1.0
+expand_margin_right = 1.0
+expand_margin_top = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 1
+shadow_offset = Vector2( 1, 1 )
+
+[sub_resource type="Theme" id=4]
+default_font = SubResource( 5 )
+Button/colors/font_color = Color( 1, 0.984314, 0.858824, 1 )
+Button/colors/font_color_disabled = Color( 0, 0, 0, 1 )
+Button/colors/font_color_focus = Color( 0.937255, 0.513726, 0.329412, 1 )
+Button/colors/font_color_hover = Color( 0.937255, 0.513726, 0.329412, 1 )
+Button/colors/font_color_pressed = Color( 1, 0.984314, 0.858824, 1 )
+Button/constants/hseparation = 0
+Button/fonts/font = SubResource( 5 )
+Button/styles/disabled = SubResource( 6 )
+Button/styles/focus = SubResource( 7 )
+Button/styles/hover = SubResource( 7 )
+Button/styles/normal = SubResource( 7 )
+Button/styles/pressed = SubResource( 7 )
+
+[node name="Pause" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 1 )
+_path = "pause"
+node_path = "Button"
+buttons = [ NodePath("Button"), NodePath("Button2"), NodePath("Button3") ]
+
+[node name="Label" type="Label" parent="."]
+anchor_left = 0.5
+anchor_right = 0.5
+margin_left = -116.0
+margin_top = 47.0
+margin_right = 40.0
+margin_bottom = 114.4
+grow_horizontal = 2
+rect_scale = Vector2( 1.5, 1.5 )
+theme = SubResource( 4 )
+text = "    PAUSED
+---------------"
+valign = 1
+
+[node name="Button" parent="." instance=ExtResource( 3 )]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -111.0
+margin_top = -17.0
+margin_right = 39.8324
+margin_bottom = 18.0
+grow_horizontal = 2
+rect_scale = Vector2( 1.5, 1.5 )
+focus_neighbour_left = NodePath("../Button3")
+focus_neighbour_top = NodePath("../Button3")
+focus_neighbour_right = NodePath("../Button2")
+focus_neighbour_bottom = NodePath("../Button2")
+focus_next = NodePath("../Button2")
+focus_previous = NodePath("../Button3")
+text = "  Unpause  "
+script = ExtResource( 5 )
+main_offset = Vector2( 529, 343 )
+
+[node name="Button2" parent="." instance=ExtResource( 3 )]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -111.0
+margin_top = 63.0
+margin_right = 39.8324
+margin_bottom = 98.0
+grow_horizontal = 2
+rect_scale = Vector2( 1.5, 1.5 )
+focus_neighbour_left = NodePath("../Button")
+focus_neighbour_top = NodePath("../Button")
+focus_neighbour_right = NodePath("../Button3")
+focus_neighbour_bottom = NodePath("../Button3")
+focus_next = NodePath("../Button3")
+focus_previous = NodePath("../Button")
+text = "  Options  "
+script = ExtResource( 4 )
+main_offset = Vector2( 529, 423 )
+switch_to = "options"
+
+[node name="Button3" parent="." instance=ExtResource( 3 )]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -117.465
+margin_top = 142.9
+margin_right = 45.4649
+margin_bottom = 177.1
+grow_horizontal = 2
+rect_scale = Vector2( 1.5, 1.5 )
+focus_neighbour_left = NodePath("../Button2")
+focus_neighbour_top = NodePath("../Button2")
+focus_neighbour_right = NodePath("../Button")
+focus_neighbour_bottom = NodePath("../Button")
+focus_next = NodePath("../Button")
+focus_previous = NodePath("../Button2")
+text = "  Main Menu  "
+script = ExtResource( 4 )
+main_offset = Vector2( 529, 503 )
+switch_to = "main"

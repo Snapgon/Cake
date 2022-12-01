@@ -1,0 +1,324 @@
+[gd_scene load_steps=15 format=2]
+
+[ext_resource path="res://Gui/eurofurence/eurof35.ttf" type="DynamicFontData" id=1]
+[ext_resource path="res://SFX/AudioStreamPlayer.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/dialogue_manager/dialogue_label.gd" type="Script" id=3]
+[ext_resource path="res://Gui/Balloon.gd" type="Script" id=4]
+[ext_resource path="res://Stuff to delete later/Pointer.png" type="Texture" id=5]
+[ext_resource path="res://SFX/sound (7).wav" type="AudioStream" id=6]
+
+[sub_resource type="DynamicFont" id=31]
+size = 32
+outline_size = 2
+outline_color = Color( 0, 0, 0, 1 )
+use_mipmaps = true
+use_filter = true
+extra_spacing_char = 2
+font_data = ExtResource( 1 )
+
+[sub_resource type="DynamicFont" id=21]
+size = 32
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxFlat" id=32]
+content_margin_left = 22.0
+content_margin_top = 17.0
+bg_color = Color( 0.180392, 0.160784, 0.305882, 1 )
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[sub_resource type="DynamicFont" id=28]
+use_mipmaps = true
+use_filter = true
+extra_spacing_top = -3
+font_data = ExtResource( 1 )
+
+[sub_resource type="StyleBoxFlat" id=30]
+content_margin_left = 26.0
+content_margin_top = 16.0
+bg_color = Color( 0.180392, 0.160784, 0.305882, 1 )
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[sub_resource type="StyleBoxFlat" id=29]
+content_margin_left = 26.0
+content_margin_top = 16.0
+bg_color = Color( 0.180392, 0.160784, 0.305882, 1 )
+corner_radius_top_left = 100
+corner_radius_top_right = 100
+corner_radius_bottom_right = 100
+corner_radius_bottom_left = 100
+
+[sub_resource type="Animation" id=26]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("TextureRect:rect_position:x")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 720, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("TextureRect:rect_position:y")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 60, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("TextureRect:rect_pivot_offset:x")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/3/type = "bezier"
+tracks/3/path = NodePath("TextureRect:rect_pivot_offset:y")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/4/type = "bezier"
+tracks/4/path = NodePath("TextureRect:rect_rotation")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"points": PoolRealArray( 0, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+
+[sub_resource type="Animation" id=27]
+resource_name = "dle"
+loop = true
+tracks/0/type = "bezier"
+tracks/0/path = NodePath("TextureRect:rect_rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"points": PoolRealArray( 0.298434, -0.25, 0, 0, 0, 4.97163, -0.2, -2.3366, 0.2, -1.70769, 2.75936e-10, -0.1, 1.19413, 0.1, -1.7396, -4.148, -0.1, 1.1752, 0.2, 2.96659, 0, 0, 2.12877, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.2, 0.5, 0.8, 1 )
+}
+tracks/1/type = "bezier"
+tracks/1/path = NodePath("TextureRect:rect_pivot_offset:x")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"points": PoolRealArray( 120, -0.25, 0, 0.25, 0, 120, -0.25, 0, 0.25, 0, 120, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.5, 1 )
+}
+tracks/2/type = "bezier"
+tracks/2/path = NodePath("TextureRect:rect_pivot_offset:y")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"points": PoolRealArray( 120, -0.25, 0, 0.25, 0, 125, -0.25, 0, 0.25, 0, 120, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0, 0.5, 1 )
+}
+tracks/3/type = "bezier"
+tracks/3/path = NodePath("TextureRect:rect_position:x")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"points": PoolRealArray( 600, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/4/type = "bezier"
+tracks/4/path = NodePath("TextureRect:rect_position:y")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"points": PoolRealArray( -10, -0.25, 0, 0.25, 0 ),
+"times": PoolRealArray( 0 )
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("TextureRect:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0.1 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[node name="Balloon" type="NinePatchRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 240.0
+margin_top = 520.0
+margin_right = -320.0
+focus_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+patch_margin_left = 25
+patch_margin_top = 25
+patch_margin_right = 25
+patch_margin_bottom = 25
+script = ExtResource( 4 )
+
+[node name="Margin" type="MarginContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/margin_right = 30
+custom_constants/margin_top = 20
+custom_constants/margin_left = 30
+custom_constants/margin_bottom = 20
+
+[node name="VBox" type="VBoxContainer" parent="Margin"]
+margin_left = 30.0
+margin_top = 20.0
+margin_right = 770.0
+margin_bottom = 180.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+custom_constants/separation = 5
+
+[node name="Character" type="RichTextLabel" parent="Margin/VBox"]
+modulate = Color( 1, 1, 1, 0.470588 )
+margin_right = 740.0
+margin_bottom = 34.0
+rect_min_size = Vector2( 0, 30 )
+mouse_filter = 2
+size_flags_horizontal = 3
+custom_colors/default_color = Color( 0.137255, 0.733333, 0.745098, 1 )
+custom_fonts/normal_font = SubResource( 31 )
+bbcode_enabled = true
+bbcode_text = "Character"
+meta_underlined = false
+text = "Character"
+fit_content_height = true
+scroll_active = false
+
+[node name="DialogueLabel" type="RichTextLabel" parent="Margin/VBox"]
+margin_top = 39.0
+margin_right = 740.0
+margin_bottom = 109.0
+rect_min_size = Vector2( 740, 70 )
+mouse_filter = 2
+custom_fonts/normal_font = SubResource( 21 )
+custom_styles/normal = SubResource( 32 )
+bbcode_enabled = true
+script = ExtResource( 3 )
+skip_action = "Interact"
+
+[node name="Responses" type="Control" parent="Margin/VBox"]
+visible = false
+margin_top = 114.0
+margin_right = 740.0
+margin_bottom = 160.0
+rect_min_size = Vector2( 0, 20 )
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="RichTextLabel0" type="RichTextLabel" parent="Margin/VBox/Responses"]
+margin_left = 30.0
+margin_top = 14.0
+margin_right = 340.0
+margin_bottom = 54.0
+rect_min_size = Vector2( 100, 20 )
+focus_neighbour_left = NodePath("../RichTextLabel1")
+focus_neighbour_top = NodePath("../RichTextLabel1")
+focus_neighbour_right = NodePath("../RichTextLabel1")
+focus_neighbour_bottom = NodePath("../RichTextLabel1")
+focus_next = NodePath("../RichTextLabel1")
+focus_previous = NodePath("../RichTextLabel1")
+focus_mode = 2
+mouse_filter = 2
+mouse_default_cursor_shape = 2
+custom_fonts/normal_font = SubResource( 28 )
+custom_styles/focus = SubResource( 30 )
+custom_styles/normal = SubResource( 29 )
+
+[node name="RichTextLabel1" type="RichTextLabel" parent="Margin/VBox/Responses"]
+margin_left = 392.0
+margin_top = 14.0
+margin_right = 702.0
+margin_bottom = 54.0
+rect_min_size = Vector2( 100, 20 )
+focus_neighbour_left = NodePath("../RichTextLabel0")
+focus_neighbour_top = NodePath("../RichTextLabel0")
+focus_neighbour_right = NodePath("../RichTextLabel0")
+focus_neighbour_bottom = NodePath("../RichTextLabel0")
+focus_next = NodePath("../RichTextLabel0")
+focus_previous = NodePath("../RichTextLabel0")
+focus_mode = 2
+mouse_filter = 2
+mouse_default_cursor_shape = 2
+custom_fonts/normal_font = SubResource( 28 )
+custom_styles/focus = SubResource( 30 )
+custom_styles/normal = SubResource( 29 )
+
+[node name="TextureRect" type="TextureRect" parent="."]
+visible = false
+margin_left = 720.0
+margin_top = 60.0
+margin_right = 1460.0
+margin_bottom = 316.0
+rect_scale = Vector2( 0.1, 0.1 )
+rect_clip_content = true
+mouse_filter = 2
+texture = ExtResource( 5 )
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+pause_mode = 2
+anims/RESET = SubResource( 26 )
+anims/dle = SubResource( 27 )
+
+[node name="AudioStreamPlayer" parent="." instance=ExtResource( 2 )]
+stream = ExtResource( 6 )
+volume_db = -5.0
+variation = 0.3
+normal_range = 2.0
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.05
+one_shot = true
+
+[connection signal="finished" from="Margin/VBox/DialogueLabel" to="." method="_on_DialogueLabel_finished"]
+[connection signal="gui_input" from="Margin/VBox/Responses/RichTextLabel0" to="." method="_on_RichTextLabel0_gui_input"]
+[connection signal="mouse_entered" from="Margin/VBox/Responses/RichTextLabel0" to="." method="_on_RichTextLabel0_mouse_entered"]
+[connection signal="gui_input" from="Margin/VBox/Responses/RichTextLabel1" to="." method="_on_RichTextLabel1_gui_input"]
+[connection signal="mouse_entered" from="Margin/VBox/Responses/RichTextLabel1" to="." method="_on_RichTextLabel1_mouse_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_Timer_timeout"]

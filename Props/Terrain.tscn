@@ -1,0 +1,594 @@
+[gd_scene load_steps=23 format=2]
+
+[ext_resource path="res://addons/zylann.hterrain/hterrain_texture_set.gd" type="Script" id=1]
+[ext_resource path="res://addons/zylann.hterrain/hterrain.gd" type="Script" id=2]
+[ext_resource path="res://Music/MusicChanger.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Props/map/data.hterrain" type="Resource" id=5]
+[ext_resource path="res://Game/Nor Roots.gd" type="Script" id=6]
+[ext_resource path="res://Props/Terrain_slot1_albedo_bump.packed_tex" type="Texture" id=7]
+[ext_resource path="res://Props/Terrain_slot1_normal_roughness.packed_tex" type="Texture" id=8]
+[ext_resource path="res://Game/KillArea.gd" type="Script" id=9]
+[ext_resource path="res://Props/Terrain_slot2_albedo_bump.packed_tex" type="Texture" id=10]
+[ext_resource path="res://Props/Terrain_slot2_normal_roughness.packed_tex" type="Texture" id=11]
+[ext_resource path="res://Stuff to delete later/Stone.png" type="Texture" id=12]
+[ext_resource path="res://Props/Terrain_slot3_normal_roughness.packed_tex" type="Texture" id=13]
+[ext_resource path="res://Props/Terrain_slot0_normal_roughness.packed_tex" type="Texture" id=14]
+[ext_resource path="res://Props/Terrain_slot0_albedo_bump.packed_tex" type="Texture" id=15]
+
+[sub_resource type="Shader" id=2]
+code = "shader_type spatial;
+
+// This is a shader with less textures, in case the main one doesn't run on your GPU.
+// It's mostly a big copy/paste, because Godot doesn't support #include or #ifdef...
+
+uniform sampler2D u_terrain_heightmap;
+uniform sampler2D u_terrain_normalmap;
+// I had to remove `hint_albedo` from colormap because it makes sRGB conversion kick in,
+// which snowballs to black when doing GPU painting on that texture...
+uniform sampler2D u_terrain_colormap;// : hint_albedo;
+uniform sampler2D u_terrain_splatmap;
+uniform mat4 u_terrain_inverse_transform;
+uniform mat3 u_terrain_normal_basis;
+
+uniform sampler2D u_ground_albedo_bump_0 : hint_albedo;
+uniform sampler2D u_ground_albedo_bump_1 : hint_albedo;
+uniform sampler2D u_ground_albedo_bump_2 : hint_albedo;
+uniform sampler2D u_ground_albedo_bump_3 : hint_albedo;
+
+uniform float u_ground_uv_scale = 20.0;
+uniform bool u_depth_blending = true;
+uniform bool u_triplanar = false;
+// Each component corresponds to a ground texture. Set greater than zero to enable.
+uniform vec4 u_tile_reduction = vec4(0.0, 0.0, 0.0, 0.0);
+
+varying vec4 v_tint;
+varying vec4 v_splat;
+varying vec3 v_ground_uv;
+
+
+vec3 unpack_normal(vec4 rgba) {
+	vec3 n = rgba.xzy * 2.0 - vec3(1.0);
+	// Had to negate Z because it comes from Y in the normal map,
+	// and OpenGL-style normal maps are Y-up.
+	n.z *= -1.0;
+	return n;
+}
+
+// Blends weights according to the bump of detail textures,
+// so for example it allows to have sand fill the gaps between pebbles
+vec4 get_depth_blended_weights(vec4 splat, vec4 bumps) {
+	float dh = 0.2;
+
+	vec4 h = bumps + splat;
+	
+	// TODO Keep improving multilayer blending, there are still some edge cases...
+	// Mitigation: nullify layers with near-zero splat
+	h *= smoothstep(0, 0.05, splat);
+	
+	vec4 d = h + dh;
+	d.r -= max(h.g, max(h.b, h.a));
+	d.g -= max(h.r, max(h.b, h.a));
+	d.b -= max(h.g, max(h.r, h.a));
+	d.a -= max(h.g, max(h.b, h.r));
+	
+	return clamp(d, 0, 1);
+}
+
+vec3 get_triplanar_blend(vec3 world_normal) {
+	vec3 blending = abs(world_normal);
+	blending = normalize(max(blending, vec3(0.00001))); // Force weights to sum to 1.0
+	float b = blending.x + blending.y + blending.z;
+	return blending / vec3(b, b, b);
+}
+
+vec4 texture_triplanar(sampler2D tex, vec3 world_pos, vec3 blend) {
+	vec4 xaxis = texture(tex, world_pos.yz);
+	vec4 yaxis = texture(tex, world_pos.xz);
+	vec4 zaxis = texture(tex, world_pos.xy);
+	// blend the results of the 3 planar projections.
+	return xaxis * blend.x + yaxis * blend.y + zaxis * blend.z;
+}
+
+vec4 depth_blend2(vec4 a, vec4 b, float t) {
+	// https://www.gamasutra.com
+	// /blogs/AndreyMishkinis/20130716/196339/Advanced_Terrain_Texture_Splatting.php
+	float d = 0.1;
+	float ma = max(a.a + (1.0 - t), b.a + t) - d;
+	float ba = max(a.a + (1.0 - t) - ma, 0.0);
+	float bb = max(b.a + t - ma, 0.0);
+	return (a * ba + b * bb) / (ba + bb);
+}
+
+vec4 texture_antitile(sampler2D tex, vec2 uv) {
+	float frequency = 2.0;
+	float scale = 1.3;
+	float sharpness = 0.7;
+	
+	// Rotate and scale UV
+	float rot = 3.14 * 0.6;
+	float cosa = cos(rot);
+	float sina = sin(rot);
+	vec2 uv2 = vec2(cosa * uv.x - sina * uv.y, sina * uv.x + cosa * uv.y) * scale;
+	
+	vec4 col0 = texture(tex, uv);
+	vec4 col1 = texture(tex, uv2);
+	//col0 = vec4(0.0, 0.0, 1.0, 1.0);
+	// Periodically alternate between the two versions using a warped checker pattern
+	float t = 0.5 + 0.5 
+		* sin(uv2.x * frequency + sin(uv.x) * 2.0) 
+		* cos(uv2.y * frequency + sin(uv.y) * 2.0);
+	// Using depth blend because classic alpha blending smoothes out details
+	return depth_blend2(col0, col1, smoothstep(0.5 * sharpness, 1.0 - 0.5 * sharpness, t));
+}
+
+void vertex() {
+	vec2 cell_coords = (u_terrain_inverse_transform * WORLD_MATRIX * vec4(VERTEX, 1)).xz;
+	// Must add a half-offset so that we sample the center of pixels,
+	// otherwise bilinear filtering of the textures will give us mixed results.
+	cell_coords += vec2(0.5);
+
+	// Normalized UV
+	UV = cell_coords / vec2(textureSize(u_terrain_heightmap, 0));
+	
+	// Height displacement
+	float h = texture(u_terrain_heightmap, UV).r;
+	VERTEX.y = h;
+
+	v_ground_uv = vec3(cell_coords.x, h * WORLD_MATRIX[1][1], cell_coords.y) / u_ground_uv_scale;
+	
+	// Putting this in vertex saves 2 fetches from the fragment shader,
+	// which is good for performance at a negligible quality cost,
+	// provided that geometry is a regular grid that decimates with LOD.
+	// (downside is LOD will also decimate tint and splat, but it's not bad overall)
+	v_tint = texture(u_terrain_colormap, UV);
+	v_splat = texture(u_terrain_splatmap, UV);
+	
+	// Need to use u_terrain_normal_basis to handle scaling.
+	NORMAL = u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
+}
+
+void fragment() {
+	if (v_tint.a < 0.5) {
+		// TODO Add option to use vertex discarding instead, using NaNs
+		discard;
+	}
+	
+	vec3 terrain_normal_world = 
+		u_terrain_normal_basis * unpack_normal(texture(u_terrain_normalmap, UV));
+	terrain_normal_world = normalize(terrain_normal_world);
+
+	// TODO Detail should only be rasterized on nearby chunks (needs proximity management to switch shaders)
+	
+	vec2 ground_uv = v_ground_uv.xz;
+	
+	vec4 ab0, ab1, ab2, ab3;
+	if (u_triplanar) {
+		// Only do triplanar on one texture slot,
+		// because otherwise it would be very expensive and cost many more ifs.
+		// I chose the last slot because first slot is the default on new splatmaps,
+		// and that's a feature used for cliffs, which are usually designed later.
+
+		vec3 blending = get_triplanar_blend(terrain_normal_world);
+
+		ab3 = texture_triplanar(u_ground_albedo_bump_3, v_ground_uv, blending);
+
+	} else {
+		if (u_tile_reduction[3] > 0.0) {
+			ab3 = texture(u_ground_albedo_bump_3, ground_uv);
+		} else {
+			ab3 = texture_antitile(u_ground_albedo_bump_3, ground_uv);
+		}
+	}
+	
+	if (u_tile_reduction[0] > 0.0) {
+		ab0 = texture_antitile(u_ground_albedo_bump_0, ground_uv);
+	} else {
+		ab0 = texture(u_ground_albedo_bump_0, ground_uv);
+	}
+	if (u_tile_reduction[1] > 0.0) {
+		ab1 = texture_antitile(u_ground_albedo_bump_1, ground_uv);
+	} else {
+		ab1 = texture(u_ground_albedo_bump_1, ground_uv);
+	}
+	if (u_tile_reduction[2] > 0.0) {
+		ab2 = texture_antitile(u_ground_albedo_bump_2, ground_uv);
+	} else {
+		ab2 = texture(u_ground_albedo_bump_2, ground_uv);
+	}
+	
+	vec3 col0 = ab0.rgb;
+	vec3 col1 = ab1.rgb;
+	vec3 col2 = ab2.rgb;
+	vec3 col3 = ab3.rgb;
+	
+	vec4 w;
+	// TODO An #ifdef macro would be nice! Or copy/paste everything in a different shader...
+	if (u_depth_blending) {
+		w = get_depth_blended_weights(v_splat, vec4(ab0.a, ab1.a, ab2.a, ab3.a));
+	} else {
+		w = v_splat.rgba;
+	}
+	
+	float w_sum = (w.r + w.g + w.b + w.a);
+	
+	ALBEDO = v_tint.rgb * (
+		w.r * col0.rgb + 
+		w.g * col1.rgb + 
+		w.b * col2.rgb + 
+		w.a * col3.rgb) / w_sum;
+	
+	ROUGHNESS = 1.0;
+	
+	NORMAL = (INV_CAMERA_MATRIX * (vec4(terrain_normal_world, 0.0))).xyz;
+
+	//ALBEDO = w.rgb;
+	//ALBEDO = v_ground_uv.xyz;
+}
+
+"
+
+[sub_resource type="Shader" id=3]
+code = "// NOTE: Shader automatically converted from Godot Engine 3.5.1.stable's SpatialMaterial.
+
+shader_type spatial;
+render_mode async_visible,blend_mix,depth_draw_opaque,cull_front,diffuse_burley,specular_schlick_ggx,unshaded;
+uniform vec4 albedo : hint_color;
+uniform sampler2D texture_albedo : hint_albedo;
+uniform float specular;
+uniform float metallic;
+uniform float grow;
+uniform float roughness : hint_range(0,1);
+uniform float point_size : hint_range(0,128);
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+
+
+void vertex() {
+	UV=UV*uv1_scale.xy+uv1_offset.xy;
+	VERTEX+=NORMAL*grow;
+}
+
+
+
+
+void fragment() {
+	vec2 base_uv = UV;
+	vec4 albedo_tex = texture(texture_albedo,base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+	METALLIC = metallic;
+	ROUGHNESS = roughness;
+	SPECULAR = specular;
+}
+"
+
+[sub_resource type="Resource" id=1]
+script = ExtResource( 1 )
+mode = 0
+textures = [ [ ExtResource( 15 ), ExtResource( 7 ), ExtResource( 10 ), ExtResource( 12 ) ], [ ExtResource( 14 ), ExtResource( 8 ), ExtResource( 11 ), ExtResource( 13 ) ] ]
+
+[sub_resource type="BoxShape" id=30]
+extents = Vector3( 250, 1.5, 250 )
+
+[sub_resource type="ShaderMaterial" id=33]
+shader = SubResource( 3 )
+shader_param/albedo = Color( 1, 1, 1, 1 )
+shader_param/specular = null
+shader_param/metallic = null
+shader_param/grow = 0.1
+shader_param/roughness = null
+shader_param/point_size = 0.0
+shader_param/uv1_scale = null
+shader_param/uv1_offset = null
+shader_param/uv2_scale = null
+shader_param/uv2_offset = null
+
+[sub_resource type="Shader" id=31]
+code = "// Wind Waker style water - NekotoArts
+// Adapted from https://www.shadertoy.com/view/3tKBDz
+// After which I added in some fractal Brownian motion
+// as well as vertex displacement
+
+shader_type spatial;
+
+uniform vec4 WATER_COL : hint_color =  vec4(0.04, 0.38, 0.88, 1.0);
+uniform vec4 WATER2_COL : hint_color =  vec4(0.04, 0.35, 0.78, 1.0);
+uniform vec4 FOAM_COL : hint_color = vec4(0.8125, 0.9609, 0.9648, 1.0);
+uniform float distortion_speed = 2.0;
+uniform vec2 tile = vec2(5.0, 5.0);
+uniform float height = 2.0;
+uniform vec2 wave_size = vec2(2.0, 2.0);
+uniform float wave_speed = 1.5;
+
+const float M_2PI = 6.283185307;
+const float M_6PI = 18.84955592;
+
+float random(vec2 uv) {
+    return fract(sin(dot(uv.xy,
+        vec2(12.9898,78.233))) *
+            43758.5453123);
+}
+
+float noise(vec2 uv) {
+    vec2 uv_index = floor(uv);
+    vec2 uv_fract = fract(uv);
+
+    // Four corners in 2D of a tile
+    float a = random(uv_index);
+    float b = random(uv_index + vec2(1.0, 0.0));
+    float c = random(uv_index + vec2(0.0, 1.0));
+    float d = random(uv_index + vec2(1.0, 1.0));
+
+    vec2 blur = smoothstep(0.0, 1.0, uv_fract);
+
+    return mix(a, b, blur.x) +
+            (c - a) * blur.y * (1.0 - blur.x) +
+            (d - b) * blur.x * blur.y;
+}
+
+float fbm(vec2 uv) {
+    int octaves = 6;
+    float amplitude = 0.5;
+    float frequency = 3.0;
+	float value = 0.0;
+	
+    for(int i = 0; i < octaves; i++) {
+        value += amplitude * noise(frequency * uv);
+        amplitude *= 0.5;
+        frequency *= 2.0;
+    }
+    return value;
+}
+
+float circ(vec2 pos, vec2 c, float s)
+{
+    c = abs(pos - c);
+    c = min(c, 1.0 - c);
+
+    return smoothstep(0.0, 0.002, sqrt(s) - sqrt(dot(c, c))) * -1.0;
+}
+
+// Foam pattern for the water constructed out of a series of circles
+float waterlayer(vec2 uv)
+{
+    uv = mod(uv, 1.0); // Clamp to [0..1]
+	
+    float ret = 1.0;
+    ret += circ(uv, vec2(0.37378, 0.277169), 0.0268181);
+    ret += circ(uv, vec2(0.0317477, 0.540372), 0.0193742);
+    ret += circ(uv, vec2(0.430044, 0.882218), 0.0232337);
+    ret += circ(uv, vec2(0.641033, 0.695106), 0.0117864);
+    ret += circ(uv, vec2(0.0146398, 0.0791346), 0.0299458);
+    ret += circ(uv, vec2(0.43871, 0.394445), 0.0289087);
+    ret += circ(uv, vec2(0.909446, 0.878141), 0.028466);
+    ret += circ(uv, vec2(0.310149, 0.686637), 0.0128496);
+    ret += circ(uv, vec2(0.928617, 0.195986), 0.0152041);
+    ret += circ(uv, vec2(0.0438506, 0.868153), 0.0268601);
+    ret += circ(uv, vec2(0.308619, 0.194937), 0.00806102);
+    ret += circ(uv, vec2(0.349922, 0.449714), 0.00928667);
+    ret += circ(uv, vec2(0.0449556, 0.953415), 0.023126);
+    ret += circ(uv, vec2(0.117761, 0.503309), 0.0151272);
+    ret += circ(uv, vec2(0.563517, 0.244991), 0.0292322);
+    ret += circ(uv, vec2(0.566936, 0.954457), 0.00981141);
+    ret += circ(uv, vec2(0.0489944, 0.200931), 0.0178746);
+    ret += circ(uv, vec2(0.569297, 0.624893), 0.0132408);
+    ret += circ(uv, vec2(0.298347, 0.710972), 0.0114426);
+    ret += circ(uv, vec2(0.878141, 0.771279), 0.00322719);
+    ret += circ(uv, vec2(0.150995, 0.376221), 0.00216157);
+    ret += circ(uv, vec2(0.119673, 0.541984), 0.0124621);
+    ret += circ(uv, vec2(0.629598, 0.295629), 0.0198736);
+    ret += circ(uv, vec2(0.334357, 0.266278), 0.0187145);
+    ret += circ(uv, vec2(0.918044, 0.968163), 0.0182928);
+    ret += circ(uv, vec2(0.965445, 0.505026), 0.006348);
+    ret += circ(uv, vec2(0.514847, 0.865444), 0.00623523);
+    ret += circ(uv, vec2(0.710575, 0.0415131), 0.00322689);
+    ret += circ(uv, vec2(0.71403, 0.576945), 0.0215641);
+    ret += circ(uv, vec2(0.748873, 0.413325), 0.0110795);
+    ret += circ(uv, vec2(0.0623365, 0.896713), 0.0236203);
+    ret += circ(uv, vec2(0.980482, 0.473849), 0.00573439);
+    ret += circ(uv, vec2(0.647463, 0.654349), 0.0188713);
+    ret += circ(uv, vec2(0.651406, 0.981297), 0.00710875);
+    ret += circ(uv, vec2(0.428928, 0.382426), 0.0298806);
+    ret += circ(uv, vec2(0.811545, 0.62568), 0.00265539);
+    ret += circ(uv, vec2(0.400787, 0.74162), 0.00486609);
+    ret += circ(uv, vec2(0.331283, 0.418536), 0.00598028);
+    ret += circ(uv, vec2(0.894762, 0.0657997), 0.00760375);
+    ret += circ(uv, vec2(0.525104, 0.572233), 0.0141796);
+    ret += circ(uv, vec2(0.431526, 0.911372), 0.0213234);
+    ret += circ(uv, vec2(0.658212, 0.910553), 0.000741023);
+    ret += circ(uv, vec2(0.514523, 0.243263), 0.0270685);
+    ret += circ(uv, vec2(0.0249494, 0.252872), 0.00876653);
+    ret += circ(uv, vec2(0.502214, 0.47269), 0.0234534);
+    ret += circ(uv, vec2(0.693271, 0.431469), 0.0246533);
+    ret += circ(uv, vec2(0.415, 0.884418), 0.0271696);
+    ret += circ(uv, vec2(0.149073, 0.41204), 0.00497198);
+    ret += circ(uv, vec2(0.533816, 0.897634), 0.00650833);
+    ret += circ(uv, vec2(0.0409132, 0.83406), 0.0191398);
+    ret += circ(uv, vec2(0.638585, 0.646019), 0.0206129);
+    ret += circ(uv, vec2(0.660342, 0.966541), 0.0053511);
+    ret += circ(uv, vec2(0.513783, 0.142233), 0.00471653);
+    ret += circ(uv, vec2(0.124305, 0.644263), 0.00116724);
+    ret += circ(uv, vec2(0.99871, 0.583864), 0.0107329);
+    ret += circ(uv, vec2(0.894879, 0.233289), 0.00667092);
+    ret += circ(uv, vec2(0.246286, 0.682766), 0.00411623);
+    ret += circ(uv, vec2(0.0761895, 0.16327), 0.0145935);
+    ret += circ(uv, vec2(0.949386, 0.802936), 0.0100873);
+    ret += circ(uv, vec2(0.480122, 0.196554), 0.0110185);
+    ret += circ(uv, vec2(0.896854, 0.803707), 0.013969);
+    ret += circ(uv, vec2(0.292865, 0.762973), 0.00566413);
+    ret += circ(uv, vec2(0.0995585, 0.117457), 0.00869407);
+    ret += circ(uv, vec2(0.377713, 0.00335442), 0.0063147);
+    ret += circ(uv, vec2(0.506365, 0.531118), 0.0144016);
+    ret += circ(uv, vec2(0.408806, 0.894771), 0.0243923);
+    ret += circ(uv, vec2(0.143579, 0.85138), 0.00418529);
+    ret += circ(uv, vec2(0.0902811, 0.181775), 0.0108896);
+    ret += circ(uv, vec2(0.780695, 0.394644), 0.00475475);
+    ret += circ(uv, vec2(0.298036, 0.625531), 0.00325285);
+    ret += circ(uv, vec2(0.218423, 0.714537), 0.00157212);
+    ret += circ(uv, vec2(0.658836, 0.159556), 0.00225897);
+    ret += circ(uv, vec2(0.987324, 0.146545), 0.0288391);
+    ret += circ(uv, vec2(0.222646, 0.251694), 0.00092276);
+    ret += circ(uv, vec2(0.159826, 0.528063), 0.00605293);
+	return max(ret, 0.0);
+}
+
+// Procedural texture generation for the water
+vec3 water(vec2 uv, vec3 cdir, float iTime)
+{
+    uv *= vec2(0.25);
+	uv += fbm(uv) * 0.2;
+
+    // Parallax height distortion with two directional waves at
+    // slightly different angles.
+    vec2 a = 0.025 * cdir.xz / cdir.y; // Parallax offset
+    float h = sin(uv.x + iTime); // Height at UV
+    uv += a * h;
+    h = sin(0.841471 * uv.x - 0.540302 * uv.y + iTime);
+    uv += a * h;
+    
+    // Texture distortion
+    float d1 = mod(uv.x + uv.y, M_2PI);
+    float d2 = mod((uv.x + uv.y + 0.25) * 1.3, M_6PI);
+    d1 = iTime * 0.07 + d1;
+    d2 = iTime * 0.5 + d2;
+    vec2 dist = vec2(
+    	sin(d1) * 0.15 + sin(d2) * 0.05,
+    	cos(d1) * 0.15 + cos(d2) * 0.05
+    );
+    
+    vec3 ret = mix(WATER_COL.rgb, WATER2_COL.rgb, waterlayer(uv + dist.xy));
+    ret = mix(ret, FOAM_COL.rgb, waterlayer(vec2(1.0) - uv - dist.yx));
+    return ret;
+}
+
+
+void vertex(){
+	float time = TIME * wave_speed;
+	vec2 uv = UV * wave_size;
+	float d1 = mod(uv.x + uv.y, M_2PI);
+    float d2 = mod((uv.x + uv.y + 0.25) * 1.3, M_6PI);
+    d1 = time * 0.07 + d1;
+    d2 = time * 0.5 + d2;
+    vec2 dist = vec2(
+    	sin(d1) * 0.15 + sin(d2) * 0.05,
+    	cos(d1) * 0.15 + cos(d2) * 0.05
+    );
+	VERTEX.y += dist.y * height;
+}
+
+void fragment()
+{
+	vec2 uv = UV;
+	
+    ALBEDO = vec3(water(uv * tile, vec3(0,1,0), TIME * distortion_speed));
+}"
+
+[sub_resource type="ShaderMaterial" id=29]
+next_pass = SubResource( 33 )
+shader = SubResource( 31 )
+shader_param/WATER_COL = Color( 0.333333, 0.866667, 0.878431, 1 )
+shader_param/WATER2_COL = Color( 0.572549, 0.862745, 0.898039, 1 )
+shader_param/FOAM_COL = Color( 0.988235, 0.866667, 0.94902, 1 )
+shader_param/distortion_speed = 2.0
+shader_param/tile = Vector2( 20, 20 )
+shader_param/height = 4.0
+shader_param/wave_size = Vector2( 2, 2 )
+shader_param/wave_speed = 1.5
+
+[sub_resource type="PlaneMesh" id=32]
+material = SubResource( 29 )
+size = Vector2( 1000, 1000 )
+
+[node name="HTerrain" type="Spatial" groups=["Wall"]]
+script = ExtResource( 2 )
+lod_scale = 2.0
+centered = true
+_terrain_data = ExtResource( 5 )
+chunk_size = 32
+collision_enabled = true
+collision_layer = 1
+collision_mask = 1
+shader_type = "Classic4Lite"
+custom_shader = SubResource( 2 )
+custom_globalmap_shader = SubResource( 3 )
+texture_set = SubResource( 1 )
+render_layers = 9
+shader_params/u_ground_uv_scale = 20
+shader_params/u_depth_blending = true
+shader_params/u_triplanar = false
+shader_params/u_tile_reduction = Plane( 0, 0, 0, 0 )
+
+[node name="KillArea" type="Area" parent="."]
+transform = Transform( 1.4, 0, 0, 0, 1, 0, 0, 0, 1.4, 0, 2.30025, 0 )
+monitorable = false
+script = ExtResource( 9 )
+
+[node name="CollisionShape" type="CollisionShape" parent="KillArea"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.49583, 0 )
+shape = SubResource( 30 )
+
+[node name="Nor Roots" type="Area" parent="."]
+transform = Transform( 1.4, 0, 0, 0, 1.4, 0, 0, 0, 1.4, 0, 3.8, 0 )
+monitorable = false
+script = ExtResource( 6 )
+
+[node name="CollisionShape" type="CollisionShape" parent="Nor Roots"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -6.496, 0 )
+shape = SubResource( 30 )
+
+[node name="MeshInstance2" type="MeshInstance" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.51474, 0 )
+layers = 2
+mesh = SubResource( 32 )
+
+[node name="Area" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+
+[node name="CollisionPolygon" parent="Area" index="0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2.96245e-07, -6.7773 )
+depth = 20.0
+polygon = PoolVector2Array( -115.958, -121.126, -152.91, -158.301, -148.017, -195.545, -79.4595, -197.473, -54.4941, -189.387, 13.8392, -205.926, 78.9821, -216.261, 94.7797, -180.4, 111.211, -161.149, 122.018, -129.172, 182.474, -98.5201, 202.954, -31.7355, 166.787, 20.441, 177.694, 43.8965, 184.191, 71.1788, 169.862, 89.894, 151.489, 128.716, 124.521, 166.694, 96.2914, 190.99, 66.796, 185.301, 20.441, 166.295, 0.702392, 181.155, 8.13906, 212.392, -45.2449, 227.966, -69.4741, 204.038, -106.206, 183.687, -153.295, 170.477, -180.657, 138.3, -192.68, 74.4309, -198.307, 34.6828, -180.333, 14.8358, -168.295, 21.8236, -142.333, 21.7605, -103.863, -0.958273, -92.502, -26.1782, -61.4908, -77.2913, -53.567, -106.691, -105.835, -129.054, -134.887, -149.632, -152.5, -158.319 )
+
+[node name="Area2" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 6.7773, -1.63118e-15 )
+music = "track3"
+
+[node name="CollisionPolygon" parent="Area2" index="0"]
+depth = 30.0
+polygon = PoolVector2Array( -150.902, -148.139, -130.096, -128.318, -111.617, -102.37, -93.1922, -73.4526, -82.6071, -48.4931, -90.8535, -15.7837, -127.76, -2.52409, -166.323, -19.0102, -179.167, -38.1394, -200.282, -95.2264, -184.2, -127.747 )
+
+[node name="Area3" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 39.576, 0 )
+music = "track2"
+
+[node name="CollisionPolygon" parent="Area3" index="0"]
+depth = 60.0
+polygon = PoolVector2Array( -148.749, 28.681, -143.564, 52.3117, -135.136, 65.503, -120.7, 85.1401, -122.46, 106.402, -116.495, 120.574, -97.9304, 133.414, -61.8534, 121.548, -32.0688, 128.186, -27.439, 136.895, -4.89659, 123.31, 19.6168, 107.508, 50.2386, 104.107, 69.3409, 110.452, 84.5038, 121.227, 99.9637, 107.051, 128.726, 54.7204, 131.191, 39.4573, 114.251, 35.6694, 116.716, 20.4046, 130.511, -9.39247, 107.509, 2.38291, 91.5997, 29.0268, 93.8637, 44.6836, 57.0804, 57.6881, 27.8816, 58.2353, 4.44609, 68.1838, -30.7488, 97.9695, -55.8533, 106.587, -82.9831, 96.601, -99.9348, 64.2656, -127.073, 47.1393, -141.698, 44.139 )
+
+[node name="Area4" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 113.833, 0 )
+music = "track4"
+
+[node name="CollisionPolygon" parent="Area4" index="0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.43172e-13, 0 )
+depth = 40.0
+polygon = PoolVector2Array( -101.789, 19.3368, -73.1846, 43.9738, -61.2426, 66.2276, -27.922, 64.4503, -12.266, 51.9069, 23.0304, 36.7688, 62.4865, 20.6449, 85.0685, -14.7994, 86.1576, -27.0405, 81.9459, -40.7395, 57.7814, -75.7589, 41.6727, -90.322, 27.7653, -101.568, 12.6763, -99.681, -23.8948, -87.5707, -42.2194, -83.2606, -49.2917, -63.9124, -67.8137, -32.7248, -68.1906, -20.1532, -73.2544, -5.55271, -77.7245, 2.50246 )
+
+[node name="Area5" parent="." instance=ExtResource( 3 )]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 39.576, 0 )
+music = "track2"
+
+[node name="CollisionPolygon" parent="Area5" index="0"]
+depth = 40.0
+polygon = PoolVector2Array( 73.1242, -130.985, 51.4664, -152.365, 32.4158, -162.269, -7.68639, -146.481, -39.468, -134.849, -77.9772, -112.158, -97.8113, -91.3213, -83.1486, -66.8806, -64.8605, -55.0074, -46.5644, -58.1068, -21.5074, -62.9058, 26.7537, -75.5091, 79.4979, -78.86, 105.834, -69.1193, 129.715, -42.1776, 149.293, -40.0576, 149.519, -50.3161, 122.623, -80.1362, 90.7625, -106.331 )
+
+[connection signal="body_entered" from="KillArea" to="KillArea" method="_on_KillArea_body_entered"]
+[connection signal="body_entered" from="Nor Roots" to="Nor Roots" method="_on_Nor_Roots_body_entered"]
+[connection signal="body_exited" from="Nor Roots" to="Nor Roots" method="_on_Nor_Roots_body_exited"]
+
+[editable path="Area"]
+[editable path="Area2"]
+[editable path="Area3"]
+[editable path="Area4"]
+[editable path="Area5"]

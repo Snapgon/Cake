@@ -1,0 +1,192 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://addons/dialogue_manager/dialogue_resource.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+resource_version = 13
+syntax_version = 2
+raw_text = "~ Base_Sign
+Sign: The Twilight Village is right ahead.
+
+~ Puzzle_Sign
+Sign: The (very ominous) Puzzle Master is near here.
+
+~ Peak
+Sign: You're getting close to the apex of this mountain.
+Sign: Did you have to do a lot of [shake rate=20 level=10]ascending[/shake] to get here?
+
+~ Imprisonment
+Sign: This is the [wave amp=25 freq=5]Cake Demon Imprisonment Site[/wave].
+Sign: Maybe releasing them isn't the best idea?
+
+~ Tutorial
+Sign: Press J to unleash [shake rate=20 level=10]SPEED[/shake].
+
+~ Tutorial1
+Sign: Do you want a [wave amp=25 freq=5]EPIC[/wave] tutorial?
+- yes
+	Sign: Press space to [shake rate=20 level=10]ascend[/shake] laterally.
+	Sign: Press space again to [shake rate=20 level=10]ascend[/shake] twice.
+- no
+	 Imaginary Narrator: The sign silently judges you."
+errors = [  ]
+titles = {
+"Base_Sign": "1",
+"Imprisonment": "11",
+"Peak": "7",
+"Puzzle_Sign": "4",
+"Tutorial": "15",
+"Tutorial1": "18"
+}
+lines = {
+"0": {
+"next_id": "1",
+"text": "Base_Sign",
+"type": "title"
+},
+"1": {
+"character": "Sign",
+"character_replacements": [  ],
+"next_id": "",
+"replacements": [  ],
+"text": "The Twilight Village is right ahead.",
+"translation_key": "The Twilight Village is right ahead.",
+"type": "dialogue"
+},
+"10": {
+"next_id": "11",
+"text": "Imprisonment",
+"type": "title"
+},
+"11": {
+"character": "Sign",
+"character_replacements": [  ],
+"next_id": "12",
+"replacements": [  ],
+"text": "This is the [wave amp=25 freq=5]Cake Demon Imprisonment Site[/wave].",
+"translation_key": "This is the [wave amp=25 freq=5]Cake Demon Imprisonment Site[/wave].",
+"type": "dialogue"
+},
+"12": {
+"character": "Sign",
+"character_replacements": [  ],
+"next_id": "",
+"replacements": [  ],
+"text": "Maybe releasing them isn't the best idea?",
+"translation_key": "Maybe releasing them isn't the best idea?",
+"type": "dialogue"
+},
+"14": {
+"next_id": "15",
+"text": "Tutorial",
+"type": "title"
+},
+"15": {
+"character": "Sign",
+"character_replacements": [  ],
+"next_id": "",
+"replacements": [  ],
+"text": "Press J to unleash [shake rate=20 level=10]SPEED[/shake].",
+"translation_key": "Press J to unleash [shake rate=20 level=10]SPEED[/shake].",
+"type": "dialogue"
+},
+"17": {
+"next_id": "18",
+"text": "Tutorial1",
+"type": "title"
+},
+"18": {
+"character": "Sign",
+"character_replacements": [  ],
+"next_id": "19",
+"replacements": [  ],
+"text": "Do you want a [wave amp=25 freq=5]EPIC[/wave] tutorial?",
+"translation_key": "Do you want a [wave amp=25 freq=5]EPIC[/wave] tutorial?",
+"type": "dialogue"
+},
+"19": {
+"next_id": "20",
+"next_id_after": "end!",
+"replacements": [  ],
+"responses": PoolStringArray( "19", "22" ),
+"text": "yes",
+"translation_key": "yes",
+"type": "response"
+},
+"20": {
+"character": "Sign",
+"character_replacements": [  ],
+"next_id": "21",
+"parent_id": "19",
+"replacements": [  ],
+"text": "Press space to [shake rate=20 level=10]ascend[/shake] laterally.",
+"translation_key": "Press space to [shake rate=20 level=10]ascend[/shake] laterally.",
+"type": "dialogue"
+},
+"21": {
+"character": "Sign",
+"character_replacements": [  ],
+"next_id": "end!",
+"parent_id": "19",
+"replacements": [  ],
+"text": "Press space again to [shake rate=20 level=10]ascend[/shake] twice.",
+"translation_key": "Press space again to [shake rate=20 level=10]ascend[/shake] twice.",
+"type": "dialogue"
+},
+"22": {
+"next_id": "23",
+"next_id_after": "end!",
+"replacements": [  ],
+"text": "no",
+"translation_key": "no",
+"type": "response"
+},
+"23": {
+"character": "Imaginary Narrator",
+"character_replacements": [  ],
+"next_id": "end!",
+"parent_id": "22",
+"replacements": [  ],
+"text": "The sign silently judges you.",
+"translation_key": "The sign silently judges you.",
+"type": "dialogue"
+},
+"3": {
+"next_id": "4",
+"text": "Puzzle_Sign",
+"type": "title"
+},
+"4": {
+"character": "Sign",
+"character_replacements": [  ],
+"next_id": "",
+"replacements": [  ],
+"text": "The (very ominous) Puzzle Master is near here.",
+"translation_key": "The (very ominous) Puzzle Master is near here.",
+"type": "dialogue"
+},
+"6": {
+"next_id": "7",
+"text": "Peak",
+"type": "title"
+},
+"7": {
+"character": "Sign",
+"character_replacements": [  ],
+"next_id": "8",
+"replacements": [  ],
+"text": "You're getting close to the apex of this mountain.",
+"translation_key": "You're getting close to the apex of this mountain.",
+"type": "dialogue"
+},
+"8": {
+"character": "Sign",
+"character_replacements": [  ],
+"next_id": "",
+"replacements": [  ],
+"text": "Did you have to do a lot of [shake rate=20 level=10]ascending[/shake] to get here?",
+"translation_key": "Did you have to do a lot of [shake rate=20 level=10]ascending[/shake] to get here?",
+"type": "dialogue"
+}
+}

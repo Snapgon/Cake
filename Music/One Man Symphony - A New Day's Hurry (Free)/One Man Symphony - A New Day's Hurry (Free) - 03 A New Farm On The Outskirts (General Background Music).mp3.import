@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/One Man Symphony - A New Day's Hurry (Free) - 03 A New Farm On The Outskirts (General Background Music).mp3-fb2cf356e6a42cdc8296128fa581bbfc.mp3str"
+
+[deps]
+
+source_file="res://Music/One Man Symphony - A New Day's Hurry (Free)/One Man Symphony - A New Day's Hurry (Free) - 03 A New Farm On The Outskirts (General Background Music).mp3"
+dest_files=[ "res://.import/One Man Symphony - A New Day's Hurry (Free) - 03 A New Farm On The Outskirts (General Background Music).mp3-fb2cf356e6a42cdc8296128fa581bbfc.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

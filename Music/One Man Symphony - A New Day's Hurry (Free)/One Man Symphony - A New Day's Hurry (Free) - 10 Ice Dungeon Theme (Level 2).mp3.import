@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/One Man Symphony - A New Day's Hurry (Free) - 10 Ice Dungeon Theme (Level 2).mp3-f7a16284dbb72fcdb4c0c248ce3d587d.mp3str"
+
+[deps]
+
+source_file="res://Music/One Man Symphony - A New Day's Hurry (Free)/One Man Symphony - A New Day's Hurry (Free) - 10 Ice Dungeon Theme (Level 2).mp3"
+dest_files=[ "res://.import/One Man Symphony - A New Day's Hurry (Free) - 10 Ice Dungeon Theme (Level 2).mp3-f7a16284dbb72fcdb4c0c248ce3d587d.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

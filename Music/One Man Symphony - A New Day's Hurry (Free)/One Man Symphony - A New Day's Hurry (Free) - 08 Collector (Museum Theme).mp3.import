@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/One Man Symphony - A New Day's Hurry (Free) - 08 Collector (Museum Theme).mp3-cadea70dc2cdc917019e8cd412fe4d2f.mp3str"
+
+[deps]
+
+source_file="res://Music/One Man Symphony - A New Day's Hurry (Free)/One Man Symphony - A New Day's Hurry (Free) - 08 Collector (Museum Theme).mp3"
+dest_files=[ "res://.import/One Man Symphony - A New Day's Hurry (Free) - 08 Collector (Museum Theme).mp3-cadea70dc2cdc917019e8cd412fe4d2f.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0

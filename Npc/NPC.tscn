@@ -1,0 +1,43 @@
+[gd_scene load_steps=5 format=2]
+
+[ext_resource path="res://Npc/NPC.gd" type="Script" id=1]
+[ext_resource path="res://Npc/NPCmodel.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Npc/NPC2model.tscn" type="PackedScene" id=3]
+
+[sub_resource type="CapsuleShape" id=1]
+
+[node name="NPC" type="KinematicBody" groups=["Interactable"]]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0 )
+collision_layer = 9
+collision_mask = 9
+script = ExtResource( 1 )
+moving = false
+
+[node name="CollisionShape" type="CollisionShape" parent="."]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+shape = SubResource( 1 )
+
+[node name="Area" type="Area" parent="."]
+collision_layer = 4
+collision_mask = 4
+monitorable = false
+
+[node name="CollisionShape" type="CollisionShape" parent="Area"]
+transform = Transform( 1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0 )
+shape = SubResource( 1 )
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.99675, 0 )
+modulate = Color( 0.498039, 0.498039, 0.498039, 1 )
+billboard = 2
+
+[node name="Spatial" type="Spatial" parent="."]
+
+[node name="NPC" parent="." instance=ExtResource( 2 )]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, -0.432363, 0 )
+
+[node name="NPC2" parent="." instance=ExtResource( 3 )]
+transform = Transform( 0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, -0.422434, 0 )
+visible = false
+
+[connection signal="area_entered" from="Area" to="." method="_on_Area_area_entered"]

@@ -1,0 +1,99 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Gui/Button.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Gui/QuitButton.gd" type="Script" id=2]
+[ext_resource path="res://Gui/Menu.gd" type="Script" id=3]
+[ext_resource path="res://Gui/SwitchButton.gd" type="Script" id=4]
+[ext_resource path="res://Gui/StartButton.gd" type="Script" id=5]
+[ext_resource path="res://Gui/cavalier/Cavalier-Bold.ttf" type="DynamicFontData" id=6]
+
+[sub_resource type="ButtonGroup" id=1]
+
+[sub_resource type="DynamicFont" id=2]
+size = 144
+outline_size = 2
+outline_color = Color( 0.639216, 0, 0, 1 )
+use_mipmaps = true
+use_filter = true
+font_data = ExtResource( 6 )
+
+[node name="Main Menu" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource( 3 )
+node_path = "Button"
+buttons = [ NodePath("Button"), NodePath("Button2"), NodePath("Button3") ]
+
+[node name="Button" parent="." instance=ExtResource( 1 )]
+margin_left = 66.0
+margin_top = 412.0
+margin_right = 236.644
+margin_bottom = 446.2
+rect_scale = Vector2( 1.5, 1.5 )
+focus_neighbour_left = NodePath("../Button3")
+focus_neighbour_top = NodePath("../Button3")
+focus_neighbour_right = NodePath("../Button2")
+focus_neighbour_bottom = NodePath("../Button2")
+focus_next = NodePath("../Button2")
+focus_previous = NodePath("../Button3")
+group = SubResource( 1 )
+text = "  Start Game  "
+script = ExtResource( 5 )
+main_offset = Vector2( 66, 412 )
+
+[node name="Button2" parent="." instance=ExtResource( 1 )]
+margin_left = 66.0
+margin_top = 508.0
+margin_right = 233.581
+margin_bottom = 542.2
+rect_scale = Vector2( 1.5, 1.5 )
+focus_neighbour_left = NodePath("../Button")
+focus_neighbour_top = NodePath("../Button")
+focus_neighbour_right = NodePath("../Button3")
+focus_neighbour_bottom = NodePath("../Button3")
+focus_next = NodePath("../Button3")
+focus_previous = NodePath("../Button")
+group = SubResource( 1 )
+text = "     Options     "
+script = ExtResource( 4 )
+main_offset = Vector2( 66, 508 )
+switch_to = "options"
+
+[node name="Button3" parent="." instance=ExtResource( 1 )]
+margin_left = 66.0
+margin_top = 607.0
+margin_right = 222.931
+margin_bottom = 641.2
+rect_scale = Vector2( 1.5, 1.5 )
+focus_neighbour_left = NodePath("../Button2")
+focus_neighbour_top = NodePath("../Button2")
+focus_neighbour_right = NodePath("../Button")
+focus_neighbour_bottom = NodePath("../Button")
+focus_next = NodePath("../Button")
+focus_previous = NodePath("../Button2")
+group = SubResource( 1 )
+text = "  Exit Game  "
+script = ExtResource( 2 )
+main_offset = Vector2( 66, 607 )
+
+[node name="Label" type="Label" parent="."]
+margin_left = 150.0
+margin_top = 56.0
+margin_right = 1166.0
+margin_bottom = 347.0
+custom_colors/font_color_shadow = Color( 0.137255, 0.733333, 0.745098, 1 )
+custom_constants/shadow_offset_x = -3
+custom_fonts/font = SubResource( 2 )
+text = "Let Them Eat Cake"
+align = 1
+
+[node name="ColorRect" type="ColorRect" parent="Label"]
+margin_left = 238.0
+margin_top = 136.0
+margin_right = 764.0
+margin_bottom = 144.0
+mouse_filter = 2
+color = Color( 0.960784, 0.937255, 0.929412, 1 )
+
+[connection signal="pressed" from="Button3" to="Button3" method="_on_Button3_pressed"]

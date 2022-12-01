@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/One Man Symphony - A New Day's Hurry (Free) - 05 Shooting Stars, In The Sky (Night Time Fishing Theme).mp3-8889a075dc0121a0dc0deac96b95b8f5.mp3str"
+
+[deps]
+
+source_file="res://Music/One Man Symphony - A New Day's Hurry (Free)/One Man Symphony - A New Day's Hurry (Free) - 05 Shooting Stars, In The Sky (Night Time Fishing Theme).mp3"
+dest_files=[ "res://.import/One Man Symphony - A New Day's Hurry (Free) - 05 Shooting Stars, In The Sky (Night Time Fishing Theme).mp3-8889a075dc0121a0dc0deac96b95b8f5.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
